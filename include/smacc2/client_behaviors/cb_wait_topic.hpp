@@ -19,17 +19,29 @@
  ******************************************************************************************************************/
 
 #pragma once
-#include <smacc2/smacc_client_behavior_base.hpp>
 
-namespace smacc2
+#include <functional>
+#include <rclcpp/rclcpp.hpp>
+#include <smacc2/smacc_asynchronous_client_behavior.hpp>
+
+namespace smacc2::client_behaviors
 {
-class SmaccClientBehavior : public ISmaccClientBehavior
+using namespace std::chrono_literals;
+
+// Asynchronous behavior that waits to a topic message to send EvCbSuccess event
+// a guard function can be set to use conditions on the contents
+class CbWaitTopic : public smacc2::SmaccAsyncClientBehavior
 {
 public:
-  virtual ~SmaccClientBehavior() {}
-  void onEntry() override;
-  void onExit() override;
-};
-}  // namespace smacc2
+  CbWaitTopic(std::string topicName);
 
-#include <smacc2/impl/smacc_client_behavior_impl.hpp>
+  virtual ~CbWaitTopic();
+
+  void onEntry() override;
+
+protected:
+  std::string topicName_;
+
+  rclcpp::Rate rate_;
+};
+}  // namespace smacc2::client_behaviors

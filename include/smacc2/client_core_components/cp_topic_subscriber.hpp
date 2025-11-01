@@ -26,7 +26,7 @@
 
 namespace smacc2
 {
-namespace components
+namespace client_core_components
 {
 using namespace smacc2::default_events;
 
@@ -44,12 +44,13 @@ public:
 
   virtual ~CpTopicSubscriber() {}
 
-  smacc2::SmaccSignal<void(const MessageType &)> onFirstMessageReceived_;
-  smacc2::SmaccSignal<void(const MessageType &)> onMessageReceived_;
-
   std::function<void(const MessageType &)> postMessageEvent;
   std::function<void(const MessageType &)> postInitialMessageEvent;
 
+  smacc2::SmaccSignal<void(const MessageType &)> onFirstMessageReceived_;
+  smacc2::SmaccSignal<void(const MessageType &)> onMessageReceived_;
+
+  // signal subscription method. This signal will be triggered when the first message is received
   template <typename T>
   boost::signals2::connection onMessageReceived(
     void (T::*callback)(const MessageType &), T * object)
@@ -57,6 +58,7 @@ public:
     return this->getStateMachine()->createSignalConnection(onMessageReceived_, callback, object);
   }
 
+  // signal subscription method. This signal will be triggered when the first message is received
   template <typename T>
   boost::signals2::connection onFirstMessageReceived(
     void (T::*callback)(const MessageType &), T * object)
@@ -66,7 +68,7 @@ public:
   }
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  void onStateOrthogonalAllocation()
   {
     this->postMessageEvent = [=](auto msg)
     {
@@ -124,5 +126,5 @@ private:
     onMessageReceived_(msg);
   }
 };
-}  // namespace components
+}  // namespace client_core_components
 }  // namespace smacc2

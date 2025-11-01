@@ -17,19 +17,31 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-
-#pragma once
-#include <smacc2/smacc_client_behavior_base.hpp>
+#include <smacc2/client_behaviors/cb_ros_stop_2.hpp>
 
 namespace smacc2
 {
-class SmaccClientBehavior : public ISmaccClientBehavior
+namespace client_behaviors
 {
-public:
-  virtual ~SmaccClientBehavior() {}
-  void onEntry() override;
-  void onExit() override;
-};
-}  // namespace smacc2
+std::vector<std::future<std::string>> CbRosStop2::detached_futures_;
 
-#include <smacc2/impl/smacc_client_behavior_impl.hpp>
+CbRosStop2::CbRosStop2() {}
+
+CbRosStop2::CbRosStop2(pid_t launchPid) {}
+
+CbRosStop2::~CbRosStop2() {}
+
+template <typename TOrthogonal, typename TSourceObject>
+void onOrthogonalAllocation()
+{
+  smacc2::SmaccAsyncClientBehavior::onOrthogonalAllocation<TOrthogonal, TSourceObject>();
+}
+
+void CbRosStop2::onEntry()
+{
+  this->requiresClient(client_);
+  client_->stop();
+}
+
+}  // namespace client_behaviors
+}  // namespace smacc2
