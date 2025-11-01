@@ -76,7 +76,7 @@ public:
     logger_.reset(new rclcpp::Logger(
       rclcpp::get_logger(smacc2::utils::cleanShortTypeName(typeid(MostDerived)))));
 
-    RCLCPP_INFO(getLogger(), "[%s] creating state ", STATE_NAME);
+    RCLCPP_INFO(getLogger(), "[%s] Creating state ", STATE_NAME);
     this->set_context(ctx.pContext_);
 
     node_ = this->getStateMachine().getNode();
@@ -123,7 +123,7 @@ public:
   void exit()
   {
     auto * derivedThis = static_cast<MostDerived *>(this);
-    this->getStateMachine().notifyOnStateExitting(derivedThis);
+    // this->getStateMachine().notifyOnStateExitting(derivedThis);
     {
       std::lock_guard<std::recursive_mutex> lock(this->getStateMachine().getMutex());
       this->getStateMachine().notifyOnStateExitting(derivedThis);
@@ -289,7 +289,10 @@ public:
       auto eg = state->createEventGenerator<TEventGenerator>(args...);
       egh->configureEventGenerator(eg);
       eg->initialize(state);
-      eg->template onStateAllocation<MostDerived, TEventGenerator>();
+
+      eg->template onOrthogonalAllocation<
+        MostDerived, TEventGenerator>();  // deprecated to extinguish in future
+      eg->template onStateOrthogonalAllocation<MostDerived, TEventGenerator>();
       return eg;
     };
 
@@ -452,7 +455,7 @@ private:
       }
 
       RCLCPP_DEBUG_STREAM(
-        getLogger(), "finding static client behaviors. State Database: "
+        getLogger(), "Finding static client behaviors. State Database: "
                        << SmaccStateInfo::staticBehaviorInfo.size() << ". Current state "
                        << cleanShortTypeName(*tindex)
                        << " cbs: " << SmaccStateInfo::staticBehaviorInfo[tindex].size());
