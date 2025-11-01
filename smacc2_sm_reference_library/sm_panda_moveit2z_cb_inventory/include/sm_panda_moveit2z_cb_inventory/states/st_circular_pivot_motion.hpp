@@ -30,15 +30,22 @@ namespace sm_panda_moveit2z_cb_inventory
 using smacc2::Transition;
 using smacc2::default_transition_tags::SUCCESS;
 using namespace smacc2;
+using namespace cl_keyboard;
 
 // STATE DECLARATION
 struct StCircularPivotMotion : smacc2::SmaccState<StCircularPivotMotion, SmPandaMoveit2zCbInventory>
 {
   using SmaccState::SmaccState;
 
+  // DECLARE CUSTOM OBJECT TAGS
+  struct NEXT : SUCCESS{};
+  struct PREVIOUS : ABORT{};
+
   // TRANSITION TABLE
   typedef boost::mpl::list<
-    // Transition<EvCbSuccess<CbMoveCartesianRelative2, OrArm>, StMoveCartesianRelative2, SUCCESS>
+    Transition<EvCbSuccess<CbCircularPivotMotion, OrArm>, StPause11, SUCCESS>,
+
+    Transition<EvKeyPressN<CbDefaultKeyboardBehavior, OrKeyboard>, StPause11, NEXT>
     >
     reactions;
 
@@ -46,6 +53,7 @@ struct StCircularPivotMotion : smacc2::SmaccState<StCircularPivotMotion, SmPanda
   static void staticConfigure()
   {
     configure_orthogonal<OrArm, CbCircularPivotMotion>();
+    configure_orthogonal<OrKeyboard, CbDefaultKeyboardBehavior>();
   }
 
   void runtimeConfigure() { RCLCPP_INFO(getLogger(), "Entering StCircularPivotMotion"); }
