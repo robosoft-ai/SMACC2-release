@@ -1,0 +1,12 @@
+Source: ros-humble-sm-atomic-http
+Section: misc
+Priority: optional
+Maintainer: Jaycee Lock <jaycee.lock@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-cl-ros2-timer, ros-humble-http-client, ros-humble-smacc2, ros-humble-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-sm-atomic-http
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-cl-ros2-timer, ros-humble-http-client, ros-humble-smacc2, xterm, ros-humble-ros-workspace
+Description: The sm_atomic_http package
