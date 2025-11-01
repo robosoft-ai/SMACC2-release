@@ -33,7 +33,7 @@ using namespace smacc2;
 using namespace cl_keyboard;
 
 // STATE DECLARATION
-struct StExecuteLastTrajectory : smacc2::SmaccState<StExecuteLastTrajectory, SmPandaMoveit2zCbInventory>
+struct StMoveKnownState1 : smacc2::SmaccState<StMoveKnownState1, SmPandaMoveit2zCbInventory>
 {
   using SmaccState::SmaccState;
 
@@ -43,21 +43,25 @@ struct StExecuteLastTrajectory : smacc2::SmaccState<StExecuteLastTrajectory, SmP
 
   // TRANSITION TABLE
   typedef boost::mpl::list<
-      Transition<EvCbSuccess<CbExecuteLastTrajectory, OrArm>, StMoveLastTrajectoryInitialState, SUCCESS>,
 
-      Transition<EvKeyPressP<CbDefaultKeyboardBehavior, OrKeyboard>, StUndoLastTrajectory, PREVIOUS>,  
-      Transition<EvKeyPressN<CbDefaultKeyboardBehavior, OrKeyboard>, StMoveLastTrajectoryInitialState, NEXT>  
+      Transition<EvCbSuccess<CbMoveKnownState, OrArm>, StPause2, SUCCESS>,
+ 
+      Transition<EvKeyPressN<CbDefaultKeyboardBehavior, OrKeyboard>, StPause2, NEXT>  
+
     >
     reactions;
 
   // STATE FUNCTIONS
   static void staticConfigure()
   {
-     configure_orthogonal<OrArm, CbExecuteLastTrajectory>();
+    std::string pkg = "sm_panda_moveit2z_cb_inventory";
+    std::string filepath = "config/move_group_client/known_states/control_authority_posture.yaml";
+
+    configure_orthogonal<OrArm, CbMoveKnownState>(pkg, filepath);
     configure_orthogonal<OrKeyboard, CbDefaultKeyboardBehavior>();
   }
 
-  void runtimeConfigure() { RCLCPP_INFO(getLogger(), "Entering StExecuteLastTrajectory"); }
+  void runtimeConfigure() { RCLCPP_INFO(getLogger(), "Entering StMoveKnownState"); }
 
   void onEntry() { RCLCPP_INFO(getLogger(), "On Entry!"); }
 
