@@ -17,35 +17,33 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-#include <nav2z_client/client_behaviors/cb_resume_slam.hpp>
+
+#pragma once
+
+#include <nav2z_client/client_behaviors/cb_track_path_odometry.hpp>
+#include <nav2z_client/components/odom_tracker/cp_odom_tracker.hpp>
+#include <nav2z_client/components/pose/cp_pose.hpp>
 
 namespace cl_nav2z
 {
-CbResumeSlam::CbResumeSlam(std::string serviceName)
-: smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>(serviceName.c_str())
+CbTrackPathOdometry::CbTrackPathOdometry() {}
+
+void CbTrackPathOdometry::onEntry()
 {
+  RCLCPP_INFO(this->getLogger(), "Pose tracker freeze reference frame");
+  cl_nav2z::Pose * poseComponent;
+  requiresComponent(poseComponent);
+  poseComponent->freezeReferenceFrame();
+
+  // poseComponent->setReferenceFrame("odom");
+
+  RCLCPP_INFO(this->getLogger(), "Odom tracker clear path");
+  cl_nav2z::odom_tracker::CpOdomTracker * odomTracker;
+  this->requiresComponent(odomTracker);
+  // odomTracker->setOdomFrame("odom");
+
+  odomTracker->clearPath();
 }
 
-void CbResumeSlam::onEntry()
-{
-  this->requiresComponent(this->slam_);
-
-  auto currentState = slam_->getState();
-
-  if (currentState == CpSlamToolbox::SlamToolboxState::Paused)
-  {
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling pause service to toggle from paused to resumed");
-    this->request_ = std::make_shared<slam_toolbox::srv::Pause::Request>();
-    smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>::onEntry();
-    this->slam_->toggleState();
-  }
-  else
-  {
-    this->request_ = nullptr;
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling skipped. The current slam state is already resumed.");
-  }
-}
-
+void CbTrackPathOdometry::onExit() {}
 }  // namespace cl_nav2z

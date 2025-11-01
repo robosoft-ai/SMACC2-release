@@ -17,35 +17,22 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-#include <nav2z_client/client_behaviors/cb_resume_slam.hpp>
+
+#pragma once
+
+#include <nav2z_client/components/pose/cp_pose.hpp>
+#include <smacc2/smacc_asynchronous_client_behavior.hpp>
 
 namespace cl_nav2z
 {
-CbResumeSlam::CbResumeSlam(std::string serviceName)
-: smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>(serviceName.c_str())
+struct CbTrackPathSLAM : public smacc2::SmaccAsyncClientBehavior
 {
-}
+private:
+public:
+  CbTrackPathSLAM();
 
-void CbResumeSlam::onEntry()
-{
-  this->requiresComponent(this->slam_);
+  void onEntry() override;
 
-  auto currentState = slam_->getState();
-
-  if (currentState == CpSlamToolbox::SlamToolboxState::Paused)
-  {
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling pause service to toggle from paused to resumed");
-    this->request_ = std::make_shared<slam_toolbox::srv::Pause::Request>();
-    smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>::onEntry();
-    this->slam_->toggleState();
-  }
-  else
-  {
-    this->request_ = nullptr;
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling skipped. The current slam state is already resumed.");
-  }
-}
-
+  void onExit() override;
+};
 }  // namespace cl_nav2z
