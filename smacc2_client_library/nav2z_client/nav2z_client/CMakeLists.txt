@@ -24,6 +24,10 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(bond REQUIRED)
 find_package(slam_toolbox REQUIRED)
+find_package(ament_index_cpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(nav2_util)
+
 
 set(dependencies
   smacc2
@@ -37,6 +41,9 @@ set(dependencies
   tf2_geometry_msgs
   bond
   slam_toolbox
+  ament_index_cpp
+  rclcpp_action
+  nav2_util
 )
 
 include_directories(include)
@@ -63,6 +70,9 @@ add_library(${PROJECT_NAME} SHARED
   src/${PROJECT_NAME}/client_behaviors/cb_resume_slam.cpp
   src/${PROJECT_NAME}/client_behaviors/cb_wait_transform.cpp
   src/${PROJECT_NAME}/client_behaviors/cb_seek_waypoint.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_spiral_motion.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_track_path_odometry.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_track_path_slam.cpp
 
   # COMPONENTS
   src/${PROJECT_NAME}/components/costmap_switch/cp_costmap_switch.cpp
@@ -77,6 +87,13 @@ add_library(${PROJECT_NAME} SHARED
   src/${PROJECT_NAME}/components/waypoints_navigator/cp_waypoints_visualizer.cpp
   src/${PROJECT_NAME}/components/amcl/cp_amcl.cpp
   src/${PROJECT_NAME}/components/slam_toolbox/cp_slam_toolbox.cpp
+
+  src/${PROJECT_NAME}/client_behaviors/cb_active_stop.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_load_waypoints_file.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_navigate_next_waypoint_free.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_position_control_free_space.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_pure_spinning.cpp
+  src/${PROJECT_NAME}/client_behaviors/cb_save_slam_map.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -96,6 +113,10 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY include/
   DESTINATION include/
+)
+
+install(FILES scripts/lidar_completion.py
+  DESTINATION lib/${PROJECT_NAME}/
 )
 
 ament_package()
