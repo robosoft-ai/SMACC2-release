@@ -21,16 +21,22 @@
 
 namespace cl_keyboard
 {
+using namespace cl_keyboard::components;
+
 class CbDefaultKeyboardBehavior : public smacc2::SmaccClientBehavior
 {
 public:
-  ClKeyboard * ClKeyboard_;
+  components::CpKeyboardListener1 * cpSubscriber1;
   std::function<void(char)> postEventKeyPress;
 
-  void onEntry();
+  void onEntry()
+  {
+    this->requiresComponent(this->cpSubscriber1);
+    this->cpSubscriber1->OnKeyPress(&CbDefaultKeyboardBehavior::OnKeyPress, this);
+  }
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  void onStateOrthogonalAllocation()
   {
     postEventKeyPress = [=](char character)
     {
@@ -89,7 +95,7 @@ public:
     };
   }
 
-  void OnKeyPress(char character);
+  void OnKeyPress(char character) { postEventKeyPress(character); }
 
   template <typename TEv>
   void postKeyEvent()

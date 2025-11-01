@@ -101,7 +101,7 @@ SmaccComponentType * ISmaccClient::createNamedComponent(std::string name, TArgs.
     auto tname = demangledTypeName<SmaccComponentType>();
     RCLCPP_INFO(
       getLogger(),
-      "Creating a new component of type %s smacc component is required by client '%s'. Creating a "
+      "Creating a new component of type: %s smacc component is required by client '%s'. Creating a "
       "new instance %s",
       this->getName().c_str(), demangledTypeName<SmaccComponentType>().c_str(), tname.c_str());
 
@@ -109,6 +109,8 @@ SmaccComponentType * ISmaccClient::createNamedComponent(std::string name, TArgs.
     ret->setStateMachine(this->getStateMachine());
     ret->owner_ = this;
     ret->initialize(this);
+
+    ret->template onComponentInitialization<TOrthogonal, TClient>();
 
     this->components_[componentkey] =
       ret;  //std::dynamic_pointer_cast<smacc2::ISmaccComponent>(ret);
@@ -123,6 +125,7 @@ SmaccComponentType * ISmaccClient::createNamedComponent(std::string name, TArgs.
   }
 
   ret->template onOrthogonalAllocation<TOrthogonal, TClient>();
+  ret->template onStateOrthogonalAllocation<TOrthogonal, TClient>();
 
   return ret.get();
 }
