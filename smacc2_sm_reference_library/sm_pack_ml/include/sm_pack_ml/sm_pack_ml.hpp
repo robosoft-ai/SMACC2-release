@@ -18,32 +18,26 @@
 #include <smacc2/smacc.hpp>
 
 // CLIENTS
-#include <keyboard_client/cl_keyboard.hpp>
-#include <ros_timer_client/cl_ros_timer.hpp>
+#include <cl_keyboard/cl_keyboard.hpp>
+#include <cl_ros2_timer/cl_ros2_timer.hpp>
 
 // ORTHOGONALS
 #include <sm_pack_ml/orthogonals/or_keyboard.hpp>
 #include <sm_pack_ml/orthogonals/or_subscriber.hpp>
 #include <sm_pack_ml/orthogonals/or_timer.hpp>
-#include <sm_pack_ml/orthogonals/or_updatable_publisher.hpp>
 
-using namespace cl_ros_timer;
-using namespace cl_ros_publisher;
+using namespace cl_ros2_timer;
 using namespace cl_keyboard;
 using namespace sm_pack_ml::cl_subscriber;
 
 //CLIENT BEHAVIORS
-#include <ros_publisher_client/client_behaviors/cb_default_publish_loop.hpp>
-#include <ros_publisher_client/client_behaviors/cb_muted_behavior.hpp>
-#include <ros_publisher_client/client_behaviors/cb_publish_once.hpp>
-
 #include <sm_pack_ml/clients/cl_subscriber/client_behaviors/cb_default_subscriber_behavior.hpp>
 #include <sm_pack_ml/clients/cl_subscriber/client_behaviors/cb_watchdog_subscriber_behavior.hpp>
 
-#include <keyboard_client/client_behaviors/cb_default_keyboard_behavior.hpp>
+#include <cl_keyboard/client_behaviors/cb_default_keyboard_behavior.hpp>
 
-//#include <ros_timer_client/client_behaviors/cb_ros_timer.hpp>
-#include <ros_timer_client/client_behaviors/cb_timer_countdown_once.hpp>
+//#include <cl_ros2_timer/client_behaviors/cb_ros_timer.hpp>
+#include <cl_ros2_timer/client_behaviors/cb_timer_countdown_once.hpp>
 
 //STATE REACTORS
 #include <sr_all_events_go/sr_all_events_go.hpp>
@@ -369,7 +363,6 @@ struct SmPackMl1 : public smacc2::SmaccStateMachineBase<SmPackMl1, JsActive>
   virtual void onInitialize() override
   {
     this->createOrthogonal<OrTimer>();
-    this->createOrthogonal<OrUpdatablePublisher>();
     this->createOrthogonal<OrKeyboard>();
     this->createOrthogonal<OrSubscriber>();
   }
