@@ -85,6 +85,7 @@ void ISmaccOrthogonal::assignClientToOrthogonal(TClient * client)
   client->setOrthogonal(this);
 
   client->template onOrthogonalAllocation<TOrthogonal, TClient>();
+  client->template onStateOrthogonalAllocation<TOrthogonal, TClient>();
 }
 
 template <typename TClientBehavior>
@@ -177,15 +178,19 @@ public:
     // }
 
     RCLCPP_INFO(
-      getLogger(), "[%s] creating client object, type:'%s' object tag: '%s'",
+      getLogger(), "[%s] Creating client object, type:'%s' object tag: '%s'",
       demangleType(typeid(*this)).c_str(), demangledTypeName<TClient>().c_str(),
       demangledTypeName<TOrthogonal>().c_str());
 
     auto client = std::make_shared<ClientHandler<TOrthogonal, TClient>>(args...);
     this->template assignClientToOrthogonal<TOrthogonal, TClient>(client.get());
 
+    // Call the component initialization hook
+    TClient * clientPtr = static_cast<TClient *>(client.get());
+    clientPtr->template onComponentInitialization<TOrthogonal, TClient>();
+
     // it is stored the client (not the client handler)
-    clients_.push_back(client);
+    this->clients_.push_back(client);
 
     return client;
   }

@@ -108,8 +108,8 @@ public:
   template <typename T>
   void setGlobalSMData(std::string name, T value);
 
-  template <typename StateField, typename BehaviorType>
-  void mapBehavior();
+  //template <typename StateField, typename BehaviorType>
+  //void mapBehavior();
 
   std::string getStateMachineName();
 
@@ -151,7 +151,7 @@ public:
   template <typename StateType>
   void notifyOnRuntimeConfigurationFinished(StateType * state);
 
-  inline uint64_t getCurrentStateCounter() const;
+  inline int64_t getCurrentStateCounter() const;
 
   inline ISmaccState * getCurrentState() const;
 
@@ -183,6 +183,9 @@ protected:
   rclcpp::Publisher<smacc2_msgs::msg::SmaccStateMachine>::SharedPtr stateMachinePub_;
   rclcpp::Publisher<smacc2_msgs::msg::SmaccStatus>::SharedPtr stateMachineStatusPub_;
   rclcpp::Publisher<smacc2_msgs::msg::SmaccTransitionLogEntry>::SharedPtr transitionLogPub_;
+
+  rclcpp::Publisher<smacc2_msgs::msg::SmaccEvent>::SharedPtr eventsLogPub_;
+
   rclcpp::Service<smacc2_msgs::srv::SmaccGetTransitionHistory>::SharedPtr transitionHistoryService_;
 
   // if it is null, you may be located in a transition. There is a small gap of time where internally
@@ -220,7 +223,7 @@ private:
   // Event to notify to the signaldetection thread that a request has been created...
   SignalDetector * signalDetector_;
 
-  uint64_t stateSeqCounter_;
+  int64_t stateSeqCounter_;
 
   void lockStateMachine(std::string msg);
 
