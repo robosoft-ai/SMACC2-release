@@ -30,16 +30,24 @@ namespace sm_panda_moveit2z_cb_inventory
 using smacc2::Transition;
 using smacc2::default_transition_tags::SUCCESS;
 using namespace smacc2;
+using namespace cl_keyboard;
 
 // STATE DECLARATION
 struct StMoveCartesianRelative2 : smacc2::SmaccState<StMoveCartesianRelative2, SmPandaMoveit2zCbInventory>
 {
   using SmaccState::SmaccState;
 
+  // DECLARE CUSTOM OBJECT TAGS
+  struct NEXT : SUCCESS{};
+  struct PREVIOUS : ABORT{};
+
   // TRANSITION TABLE
   typedef boost::mpl::list<
-    Transition<EvCbSuccess<CbMoveCartesianRelative2, OrArm>, StAttachObject, SUCCESS>,
-    Transition<EvCbFailure<CbMoveCartesianRelative2, OrArm>, StMoveCartesianRelative2, ABORT> // retry
+   Transition<EvCbSuccess<CbMoveCartesianRelative2, OrArm>, StPause6, SUCCESS>,
+   // Transition<EvCbSuccess<CbMoveCartesianRelative2, OrArm>, StAttachObject, SUCCESS>,
+   // Transition<EvCbFailure<CbMoveCartesianRelative2, OrArm>, StMoveCartesianRelative2, ABORT>, // retry
+
+    Transition<EvKeyPressN<CbDefaultKeyboardBehavior, OrKeyboard>, StPause6, NEXT>  
     >
 
     reactions;
@@ -48,10 +56,11 @@ struct StMoveCartesianRelative2 : smacc2::SmaccState<StMoveCartesianRelative2, S
   static void staticConfigure()
   {
     geometry_msgs::msg::Vector3 position;
-    position.x = -0.01;
+    position.x = -0.25;  // Increased to 25cm for dramatic movement
     position.y = 0.0;
-    position.z = 0.01;
-    configure_orthogonal<OrArm, CbMoveCartesianRelative2>("tool0", "tool0", position);
+    position.z = 0.20;   // Increased to 20cm for dramatic movement
+    configure_orthogonal<OrArm, CbMoveCartesianRelative2>("world", "panda_link8", position);
+    configure_orthogonal<OrKeyboard, CbDefaultKeyboardBehavior>();
   }
 
   void runtimeConfigure() { RCLCPP_INFO(getLogger(), "Entering StMoveCartesianRelative2"); }
