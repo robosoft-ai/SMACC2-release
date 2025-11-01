@@ -17,35 +17,30 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-#include <nav2z_client/client_behaviors/cb_resume_slam.hpp>
+
+#pragma once
+
+#include <memory>
+#include <nav2_msgs/srv/save_map.hpp>
+#include <slam_toolbox/srv/save_map.hpp>
+#include <smacc2/client_behaviors/cb_call_service.hpp>
+#include <smacc2/smacc_asynchronous_client_behavior.hpp>
 
 namespace cl_nav2z
 {
-CbResumeSlam::CbResumeSlam(std::string serviceName)
-: smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>(serviceName.c_str())
+using namespace std::chrono_literals;
+template <typename TService>
+using CbServiceCall = smacc2::client_behaviors::CbServiceCall<TService>;
+
+struct CbSaveSlamMap : public CbServiceCall<nav2_msgs::srv::SaveMap>
 {
-}
+public:
+  CbSaveSlamMap();
+  // void onEntry() override {}
 
-void CbResumeSlam::onEntry()
-{
-  this->requiresComponent(this->slam_);
+  void onExit() override;
 
-  auto currentState = slam_->getState();
-
-  if (currentState == CpSlamToolbox::SlamToolboxState::Paused)
-  {
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling pause service to toggle from paused to resumed");
-    this->request_ = std::make_shared<slam_toolbox::srv::Pause::Request>();
-    smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>::onEntry();
-    this->slam_->toggleState();
-  }
-  else
-  {
-    this->request_ = nullptr;
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling skipped. The current slam state is already resumed.");
-  }
-}
-
+  std::shared_ptr<nav2_msgs::srv::SaveMap::Request> getRequest(
+    /*slam_toolbox::srv::SaveMap_Request_<std::allocator<void> >::_name_type saved_map_name*/);
+};
 }  // namespace cl_nav2z

@@ -17,35 +17,37 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-#include <nav2z_client/client_behaviors/cb_resume_slam.hpp>
+
+#include <angles/angles.h>
+#include <geometry_msgs/msg/twist.hpp>
+#include <smacc2/smacc_asynchronous_client_behavior.hpp>
+
+#include <nav2z_client/client_behaviors/cb_active_stop.hpp>
 
 namespace cl_nav2z
 {
-CbResumeSlam::CbResumeSlam(std::string serviceName)
-: smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>(serviceName.c_str())
+CbActiveStop::CbActiveStop() {}
+
+void CbActiveStop::onEntry()
 {
+  auto nh = this->getNode();
+  cmd_vel_pub_ = nh->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::QoS(1));
+
+  rclcpp::Rate loop_rate(5);
+  geometry_msgs::msg::Twist cmd_vel_msg;
+  while (!this->isShutdownRequested())
+  {
+    cmd_vel_msg.linear.x = 0;
+    cmd_vel_msg.angular.z = 0;
+
+    cmd_vel_pub_->publish(cmd_vel_msg);
+    loop_rate.sleep();
+  }
+  RCLCPP_INFO_STREAM(getLogger(), "[" << getName() << "] Finished behavior execution");
+
+  this->postSuccessEvent();
 }
 
-void CbResumeSlam::onEntry()
-{
-  this->requiresComponent(this->slam_);
-
-  auto currentState = slam_->getState();
-
-  if (currentState == CpSlamToolbox::SlamToolboxState::Paused)
-  {
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling pause service to toggle from paused to resumed");
-    this->request_ = std::make_shared<slam_toolbox::srv::Pause::Request>();
-    smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>::onEntry();
-    this->slam_->toggleState();
-  }
-  else
-  {
-    this->request_ = nullptr;
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling skipped. The current slam state is already resumed.");
-  }
-}
+void CbActiveStop::onExit() {}
 
 }  // namespace cl_nav2z

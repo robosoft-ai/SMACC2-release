@@ -17,35 +17,32 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-#include <nav2z_client/client_behaviors/cb_resume_slam.hpp>
+
+#pragma once
+
+#include <geometry_msgs/msg/twist.hpp>
+#include <smacc2/smacc_asynchronous_client_behavior.hpp>
 
 namespace cl_nav2z
 {
-CbResumeSlam::CbResumeSlam(std::string serviceName)
-: smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>(serviceName.c_str())
+struct CbPureSpinning : public smacc2::SmaccAsyncClientBehavior
 {
-}
+private:
+  double targetYaw__rads;
+  bool goalReached_;
+  double k_betta_;
+  double max_angular_yaw_speed_;
 
-void CbResumeSlam::onEntry()
-{
-  this->requiresComponent(this->slam_);
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
 
-  auto currentState = slam_->getState();
+public:
+  double yaw_goal_tolerance_rads_;
 
-  if (currentState == CpSlamToolbox::SlamToolboxState::Paused)
-  {
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling pause service to toggle from paused to resumed");
-    this->request_ = std::make_shared<slam_toolbox::srv::Pause::Request>();
-    smacc2::client_behaviors::CbServiceCall<slam_toolbox::srv::Pause>::onEntry();
-    this->slam_->toggleState();
-  }
-  else
-  {
-    this->request_ = nullptr;
-    RCLCPP_INFO(
-      getLogger(), "[CbResumeSlam] calling skipped. The current slam state is already resumed.");
-  }
-}
+  CbPureSpinning(double targetYaw_rads, double max_angular_yaw_speed = 0.5);
+  void updateParameters();
 
+  void onEntry() override;
+
+  void onExit() override;
+};
 }  // namespace cl_nav2z
