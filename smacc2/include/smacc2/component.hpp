@@ -41,6 +41,10 @@ protected:
   // implement. The owner and the node are already available when it is invoked by the client.
   virtual void onInitialize();
 
+  // component initialization with type information of the orthogonal and client that owns it
+  template <typename TOrthogonal, typename TClient>
+  void onComponentInitialization();
+
   template <typename EventType>
   void postEvent(const EventType & ev);
 
@@ -48,18 +52,43 @@ protected:
   void postEvent();
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  [[deprecated(
+    "Use onStateOrthogonalAllocation instead. onOrthogonalAllocation will be removed in future "
+    "versions.")]] void
+  onOrthogonalAllocation()
+  {
+  }
+
+  // New method: called when the component is allocated to a state (replaces onOrthogonalAllocation)
+  template <typename TOrthogonal, typename TSourceObject>
+  void onStateOrthogonalAllocation()
   {
   }
 
   template <typename TComponent>
+  [[deprecated(
+    "Use requiresComponent with ComponentRequirement argument instead. This method will be removed "
+    "in future "
+    "versions.")]] void
+  requiresComponent(TComponent *& requiredComponentStorage, bool throwExceptionIfNotExist);
+
+  template <typename TComponent>
+  [[deprecated(
+    "Use requiresComponent with ComponentRequirement argument instead. This method will be removed "
+    "in future "
+    "versions.")]] void
+  requiresComponent(
+    std::string name, TComponent *& requiredComponentStorage, bool throwExceptionIfNotExist);
+
+  template <typename TComponent>
   void requiresComponent(
-    TComponent *& requiredComponentStorage, bool throwExceptionIfNotExist = false);
+    TComponent *& requiredComponentStorage,
+    ComponentRequirement requirementType = ComponentRequirement::SOFT);
 
   template <typename TComponent>
   void requiresComponent(
     std::string name, TComponent *& requiredComponentStorage,
-    bool throwExceptionIfNotExist = false);
+    ComponentRequirement requirementType = ComponentRequirement::SOFT);
 
   template <typename TClient>
   void requiresClient(TClient *& requiredClientStorage);
