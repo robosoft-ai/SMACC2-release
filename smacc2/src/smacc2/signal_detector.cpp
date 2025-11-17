@@ -37,9 +37,24 @@ namespace smacc2
 {
 using namespace std::chrono_literals;
 
-// Define global variables for graceful shutdown handling
-std::atomic<bool> g_shutdown_requested{false};
-SignalDetector * g_signal_detector = nullptr;
+/**
+******************************************************************************************************************
+* SmExecution singleton implementation
+******************************************************************************************************************
+*/
+SmExecution::SmExecution()
+: schedulerThread(nullptr),
+  signalDetectorLoop(nullptr),
+  signalDetector(nullptr),
+  scheduler1(nullptr)
+{
+}
+
+SmExecution & SmExecution::getInstance()
+{
+  static SmExecution instance;
+  return instance;
+}
 
 /**
 ******************************************************************************************************************
@@ -246,8 +261,8 @@ void SignalDetector::pollOnce()
 {
   // precondition: smaccStateMachine_ != nullptr
 
-  //TRACEPOINT( spinOnce);
-  TRACEPOINT(spinOnce);
+  //TRACETOOLS_TRACEPOINT( spinOnce);
+  TRACETOOLS_TRACEPOINT(spinOnce);
 
   std::lock_guard<std::recursive_mutex> lock(smaccStateMachine_->m_mutex_);
   try
@@ -269,9 +284,9 @@ void SignalDetector::pollOnce()
             node->get_logger(),
             "[PollOnce] update client call:  " << demangleType(typeid(*updatableClient)));
 
-          TRACEPOINT(smacc2_state_update_start, updatableElementName);
+          TRACETOOLS_TRACEPOINT(smacc2_state_update_start, updatableElementName);
           updatableClient->executeUpdate(smaccStateMachine_->getNode());
-          TRACEPOINT(smacc2_state_update_start, updatableElementName);
+          TRACETOOLS_TRACEPOINT(smacc2_state_update_start, updatableElementName);
         }
         catch (const std::exception & e)
         {
@@ -306,10 +321,10 @@ void SignalDetector::pollOnce()
           RCLCPP_DEBUG_STREAM(
             getLogger(), "pollOnce update client behavior call: "
                            << demangleType(typeid(*udpatableStateElement)));
-          TRACEPOINT(smacc2_state_update_start, updatableElementNameCstr);
+          TRACETOOLS_TRACEPOINT(smacc2_state_update_start, updatableElementNameCstr);
 
           udpatableStateElement->executeUpdate(smaccStateMachine_->getNode());
-          TRACEPOINT(smacc2_state_update_start, updatableElementNameCstr);
+          TRACETOOLS_TRACEPOINT(smacc2_state_update_start, updatableElementNameCstr);
         }
       }
     }
@@ -392,13 +407,11 @@ void onSignalShutdown(int sig)
   // We must NOT call complex C++ methods here (like terminateScheduler)
   // as they may use mutexes/condition variables which are not signal-safe
 
-  // Set global shutdown flag (atomic operation - signal-safe)
-  g_shutdown_requested = true;
-
   // Stop the signal detector loop (atomic operation - signal-safe)
-  if (g_signal_detector)
+  SmExecution & smExecution = SmExecution::getInstance();
+  if (smExecution.signalDetector)
   {
-    g_signal_detector->stop();
+    smExecution.signalDetector->stop();
   }
 
   // Trigger ROS2 shutdown (this handles its own signal safety)

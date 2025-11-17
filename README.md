@@ -10,6 +10,7 @@ ROS 2 Distro | Branch | Build status | Documentation | Released packages
 :---------: | :----: | :----------: | :-----------: | :---------------:
 **Foxy** | [`foxy`](https://github.com/robosoft-ai/SMACC2/tree/foxy) | [![Foxy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml?branch=foxy) <br /> [![Foxy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml?branch=foxy) | [![Doxygen Doc Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/foxy/html/namespaces.html) | [![ROS Build Farm](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?style=plastic&subject=ros-buildfarm&status=E.O.L&color=lightgray)](http://docs.ros.org/en/humble/Releases/End-of-Life.html) <br/>[SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#foxy)
 **Humble** | [`humble`](https://github.com/robosoft-ai/SMACC2/tree/humble) | [![Humble Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml?branch=humble)<br/> [![Humble Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml?branch=humble) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/humble/html/namespaces.html)| [![Build Status](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?subject=ros-buildfarm)](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/)<br/> [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#humble)
+**Jazzy** | [`jazzy`](https://github.com/robosoft-ai/SMACC2/tree/jazzy) | [![Jazzy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml?branch=jazzy) <br /> [![Jazzy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml?branch=jazzy) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/jazzy/html/namespaces.html) | [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#jazzy)
 
 **NOTE**: There are three build stages checking current and future compatibility of the package.
 
@@ -24,13 +25,66 @@ ROS 2 Distro | Branch | Build status | Documentation | Released packages
 
 1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
 
+## Getting started - ROS Jazzy
+
+1. [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html).
+
+2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
+   ```
+   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
+   ```
+3. Create a new ROS 2 workspace if necessary:
+   ```
+   export COLCON_WS=~/workspace/jazzy_ws
+   mkdir -p $COLCON_WS/src
+   ```
+4. Or just navigate to your workspace source folder:
+   ```
+   cd ~/workspace/jazzy_ws/src
+   ```
+5. Clone the repo:
+   ```
+   git clone https://github.com/robosoft-ai/SMACC2.git
+   ```
+6. Checkout the Jazzy branch:
+   ```
+   cd ~/workspace/jazzy_ws/src/SMACC2
+   git checkout jazzy
+   ```
+7. Navigate to the workspace:
+   ```
+   cd ~/workspace/jazzy_ws
+   ```
+8. Update System:
+   ```
+   sudo apt update
+   sudo apt upgrade
+   ```
+9. Source the workspace:
+   ```
+   source /opt/ros/jazzy/setup.bash
+   ```
+10. Update dependencies:
+   ```
+   rosdep update
+   ```
+11. Pull relevant packages and install dependencies:
+   ```
+   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.jazzy.repos
+   rosdep install --ignore-src --from-paths src -y -r
+   ```
+12. Compile:
+   ```
+   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+   ```
+
 ## Getting started - ROS Humble
 
 1. [Install ROS 2 Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html).
 
-2. Make sure that `colcon`, its extensions and `vcs` are installed:
+2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
    ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool
+   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
    ```
 3. Create a new ROS 2 workspace if necessary:
    ```
@@ -81,9 +135,9 @@ ROS 2 Distro | Branch | Build status | Documentation | Released packages
 
 1. [Install ROS 2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html).
 
-2. Make sure that `colcon`, its extensions and `vcs` are installed:
+2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
    ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool
+   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
    ```
 3. Create a new ROS 2 workspace if necessary:
    ```
@@ -136,7 +190,7 @@ ROS 2 Distro | Branch | Build status | Documentation | Released packages
  *   ***Orthogonals:*** Originally conceived by David Harel in 1987, orthogonality is absolutely crucial to developing state machines for complex robotic systems. This is because complex robots are always a collection of hardware devices which require communication protocols, start-up determinism, etc. With orthogonals, it is an intuitive and relatively straight forward exercise (at least conceptually;) to code a state machine for a robot comprising a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, for instance.
  *  ***Static State Machine Checking:*** One of the features that SMACC2 inherits from Boost Statechart is that you get compile time validation checking. This benefits developers in that the amount of runtime testing necessary to ship quality software that is both stable and safe is dramatically reduced. Our philosophy is "Wherever possible, let the compiler do it".
  *  ***State Machine Reference Library:*** With a constantly growing library of out-of-the-box reference state machines, (found in the folder [sm_reference_library](smacc2_sm_reference_library)) guaranteed to compile and run, you can jumpstart your development efforts by choosing a reference machine that is closest to your needs, and then customize and extend to meet the specific requirements of your robotic application. All the while knowing that the library supports advanced functionalities that are practically universal among actual working robots.
- *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the ros_timer_client, the multi_role_sensor_client, and a keyboard_client used extensively for state machine drafting & debugging.
+ *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the cl_ros2_timer, the multi_role_sensor_client, and a cl_keyboard used extensively for state machine drafting & debugging.
   *  ***Extensive Documentation:*** Although many ROS users are familiar with doxygen, our development team has spent a lot of time researching the more advanced features of doxygen such as uml style class diagrams and call graphs, and we've used them to document the SMACC2 library. Have a look to [our doxygen sites](https://robosoft-ai.github.io/smacc2_doxygen/master/html/namespaces.html) and we think you'll be blown away at what Doxygen looks like when [it's done right](https://robosoft-ai.github.io/smacc2_doxygen/master/html/classsmacc2_1_1ISmaccStateMachine.html) and it becomes a powerful tool to research a codebase.
   *  ***SMACC2 Runtime Analyzer:*** The SMACC2 library works out of the box with the SMACC2 RTA. This allows developers to visualize and runtime debug the state machines they are working on. The SMACC2 RTA is closed source, but is free for individual and academic use. It can be found [here](https://robosoft.ai/product-category/smacc2-runtime-analyzer/).
 

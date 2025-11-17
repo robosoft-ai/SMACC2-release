@@ -11,7 +11,7 @@ First, source your chosen ros2 distro.
 source /opt/ros/rolling/setup.bash
 ```
 ```
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 ```
 
 Before you build, make sure you've installed all the dependencies...
@@ -26,10 +26,10 @@ Then build with colcon build...
 colcon build
 ```
 <h2>Operating Instructions</h2>
-After you build, remember to source the proper install folder...
+After you build, remember to source the workspace...
 
 ```
-source ~/workspace/humble_ws/install/setup.bash
+source ~/workspace/jazzy_ws/install/setup.bash
 ```
 
 And then run the launch file...
