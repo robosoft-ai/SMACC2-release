@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-atomic-mode-states
+Section: misc
+Priority: optional
+Maintainer: Pablo Inigo Blasco <pablo@ibrobotics.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-ros2-timer, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-atomic-mode-states
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-cl-ros2-timer, ros-jazzy-smacc2, xterm, ros-jazzy-ros-workspace
+Description: The sm_atomic_mode_states package
