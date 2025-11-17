@@ -1,235 +1,427 @@
-# SMACC2
+# sm_multithread_test_1 - SMACC2 Multi-threaded Executor Demonstration
 
-SMACC2 is an event-driven, asynchronous, behavioral state machine library for real-time ROS 2 (Robotic Operating System) applications written in C++, designed to allow programmers to build robot control applications for multicomponent robots, in an intuitive and systematic manner.
+**A reference implementation demonstrating SMACC2's multi-threaded executor capability.**
 
-SMACC was inspired by Harel's statecharts and the [SMACH ROS package](http://wiki.ros.org/smach). SMACC is built on top of the [Boost StateChart library](https://www.boost.org/doc/libs/1_53_0/libs/statechart/doc/index.html).
+> 🎯 **Addresses GitHub Issue [#571](https://github.com/robosoft-ai/SMACC2/issues/571)**: "Multithread executor example"
 
-## Repository Status, Packages and Documentation
+---
 
-ROS 2 Distro | Branch | Build status | Documentation | Released packages
-:---------: | :----: | :----------: | :-----------: | :---------------:
-**Foxy** | [`foxy`](https://github.com/robosoft-ai/SMACC2/tree/foxy) | [![Foxy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml?branch=foxy) <br /> [![Foxy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml?branch=foxy) | [![Doxygen Doc Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/foxy/html/namespaces.html) | [![ROS Build Farm](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?style=plastic&subject=ros-buildfarm&status=E.O.L&color=lightgray)](http://docs.ros.org/en/humble/Releases/End-of-Life.html) <br/>[SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#foxy)
-**Humble** | [`humble`](https://github.com/robosoft-ai/SMACC2/tree/humble) | [![Humble Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml?branch=humble)<br/> [![Humble Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml?branch=humble) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/humble/html/namespaces.html)| [![Build Status](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?subject=ros-buildfarm)](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/)<br/> [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#humble)
-**Jazzy** | [`jazzy`](https://github.com/robosoft-ai/SMACC2/tree/jazzy) | [![Jazzy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml?branch=jazzy) <br /> [![Jazzy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml?branch=jazzy) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/jazzy/html/namespaces.html) | [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#jazzy)
+## 📋 Table of Contents
 
-**NOTE**: There are three build stages checking current and future compatibility of the package.
+- [What is This?](#what-is-this)
+- [Quick Start](#quick-start)
+- [The Problem This Solves](#the-problem-this-solves)
+- [What You'll Observe](#what-youll-observe)
+- [How It Works](#how-it-works)
+- [When to Use Multi-threaded Mode](#when-to-use-multi-threaded-mode)
+- [Important Limitations](#important-limitations)
+- [Code Deep Dive](#code-deep-dive)
+- [Build Instructions](#build-instructions)
+- [Troubleshooting](#troubleshooting)
+- [Further Reading](#further-reading)
 
-1. Binary builds - against released packages (main and testing) in ROS distributions. Shows that direct local build is possible.
+---
 
-   Uses repos file: `src/SMACC2/.github/SMACC2-not-released.<ros-distro>.repos`
+## What is This?
 
-1. Semi-binary builds - against released core ROS packages (main and testing), but the immediate dependencies are pulled from source.
-   Shows that local build with dependencies is possible and if fails there we can expect that after the next package sync we will not be able to build.
+This state machine demonstrates **SMACC2's multi-threaded executor feature** by running four concurrent timers with simulated work. The logs clearly show the difference between single-threaded and multi-threaded execution through thread IDs and overlapping timestamps.
 
-   Uses repos file: `src/SMACC2/.github/SMACC2.repos`
+**Key Features:**
+- ✅ Multi-threaded ROS2 callback processing
+- ✅ Visual demonstration of concurrency via logs
+- ✅ Side-by-side comparison with single-threaded mode
+- ✅ Comprehensive documentation of usage and limitations
 
-1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+---
 
-## Getting started - ROS Jazzy
+## Quick Start
 
-1. [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html).
+### Run Multi-threaded Version (Main Demo)
 
-2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
-   ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
-   ```
-3. Create a new ROS 2 workspace if necessary:
-   ```
-   export COLCON_WS=~/workspace/jazzy_ws
-   mkdir -p $COLCON_WS/src
-   ```
-4. Or just navigate to your workspace source folder:
-   ```
-   cd ~/workspace/jazzy_ws/src
-   ```
-5. Clone the repo:
-   ```
-   git clone https://github.com/robosoft-ai/SMACC2.git
-   ```
-6. Checkout the Jazzy branch:
-   ```
-   cd ~/workspace/jazzy_ws/src/SMACC2
-   git checkout jazzy
-   ```
-7. Navigate to the workspace:
-   ```
-   cd ~/workspace/jazzy_ws
-   ```
-8. Update System:
-   ```
-   sudo apt update
-   sudo apt upgrade
-   ```
-9. Source the workspace:
-   ```
-   source /opt/ros/jazzy/setup.bash
-   ```
-10. Update dependencies:
-   ```
-   rosdep update
-   ```
-11. Pull relevant packages and install dependencies:
-   ```
-   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.jazzy.repos
-   rosdep install --ignore-src --from-paths src -y -r
-   ```
-12. Compile:
-   ```
-   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
-   ```
+```bash
+# Build the package
+colcon build --packages-select sm_multithread_test_1
 
-## Getting started - ROS Humble
+# Source the workspace
+source install/setup.bash
 
-1. [Install ROS 2 Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html).
+# Launch multi-threaded version
+ros2 launch sm_multithread_test_1 sm_multithread_test_1.launch.py
+```
 
-2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
-   ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
-   ```
-3. Create a new ROS 2 workspace if necessary:
-   ```
-   export COLCON_WS=~/workspace/humble_ws
-   mkdir -p $COLCON_WS/src
-   ```
-4. Or just navigate to your workspace source folder:
-   ```
-   cd ~/workspace/humble_ws/src
-   ```
-5. Clone the repo:
-   ```
-   git clone https://github.com/robosoft-ai/SMACC2.git
-   ```
-6. Checkout the Humble branch:
-   ```
-   cd ~/workspace/humble_ws/src/SMACC2
-   git checkout humble
-   ```
-7. Navigate to the workspace:
-   ```
-   cd ~/workspace/humble_ws
-   ```
-8. Update System:
-   ```
-   sudo apt update
-   sudo apt upgrade
-   ```
-9. Source the workspace:
-   ```
-   source /opt/ros/humble/setup.bash
-   ```
-10. Update dependencies:
-   ```
-   rosdep update
-   ```
-11. Pull relevant packages and install dependencies:
-   ```
-   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.humble.repos
-   rosdep install --ignore-src --from-paths src -y -r
-   ```
-12. Compile:
-   ```
-   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
-   ```
+### Run Single-threaded Version (For Comparison)
 
-## Getting started - ROS Foxy
+```bash
+# Launch single-threaded version
+ros2 launch sm_multithread_test_1 sm_multithread_test_1_single.launch.py
+```
 
-1. [Install ROS 2 Foxy](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html).
+The state machine runs for **15 seconds** then enters a terminal state. Press `Ctrl+C` to exit.
 
-2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
-   ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
-   ```
-3. Create a new ROS 2 workspace if necessary:
-   ```
-   export COLCON_WS=~/workspace/foxy_ws
-   mkdir -p $COLCON_WS/src
-   ```
-4. Or just navigate to your workspace source folder:
-   ```
-   cd ~/workspace/foxy_ws/src
-   ```
-5. Clone the repo:
-   ```
-   git clone https://github.com/robosoft-ai/SMACC2.git
-   ```
-6. Checkout the Foxy branch:
-   ```
-   cd ~/workspace/foxy_ws/src/SMACC2
-   git checkout foxy
-   ```
-7. Navigate to the workspace:
-   ```
-   cd ~/workspace/foxy_ws
-   ```
-8. Update System:
-   ```
-   sudo apt update
-   sudo apt upgrade
-   ```
-9. Source the workspace:
-   ```
-   source /opt/ros/foxy/setup.bash
-   ```
-10. Update dependencies:
-   ```
-   rosdep update
-   ```
-11. Pull relevant packages and install dependencies:
-   ```
-   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.foxy.repos
-   rosdep install --ignore-src --from-paths src -y -r
-   ```
-12. Compile:
-   ```
-   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
-   ```
+---
 
-## Features
- *  ***Powered by ROS 2:*** SMACC2 has been developed specifically to work with ROS 2. It supports ROS 2 topics, services and actions, right out of the box.
- *   ***Written in C++:*** Until now, ROS 2 has lacked a library to develop task-level behavioral state machines in C++. Although libraries have been developed in scripting languages such as python, these are unsuitable for real-world industrial environments where real-time requirements are demanded.
- *   ***Orthogonals:*** Originally conceived by David Harel in 1987, orthogonality is absolutely crucial to developing state machines for complex robotic systems. This is because complex robots are always a collection of hardware devices which require communication protocols, start-up determinism, etc. With orthogonals, it is an intuitive and relatively straight forward exercise (at least conceptually;) to code a state machine for a robot comprising a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, for instance.
- *  ***Static State Machine Checking:*** One of the features that SMACC2 inherits from Boost Statechart is that you get compile time validation checking. This benefits developers in that the amount of runtime testing necessary to ship quality software that is both stable and safe is dramatically reduced. Our philosophy is "Wherever possible, let the compiler do it".
- *  ***State Machine Reference Library:*** With a constantly growing library of out-of-the-box reference state machines, (found in the folder [sm_reference_library](smacc2_sm_reference_library)) guaranteed to compile and run, you can jumpstart your development efforts by choosing a reference machine that is closest to your needs, and then customize and extend to meet the specific requirements of your robotic application. All the while knowing that the library supports advanced functionalities that are practically universal among actual working robots.
- *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the cl_ros2_timer, the multi_role_sensor_client, and a cl_keyboard used extensively for state machine drafting & debugging.
-  *  ***Extensive Documentation:*** Although many ROS users are familiar with doxygen, our development team has spent a lot of time researching the more advanced features of doxygen such as uml style class diagrams and call graphs, and we've used them to document the SMACC2 library. Have a look to [our doxygen sites](https://robosoft-ai.github.io/smacc2_doxygen/master/html/namespaces.html) and we think you'll be blown away at what Doxygen looks like when [it's done right](https://robosoft-ai.github.io/smacc2_doxygen/master/html/classsmacc2_1_1ISmaccStateMachine.html) and it becomes a powerful tool to research a codebase.
-  *  ***SMACC2 Runtime Analyzer:*** The SMACC2 library works out of the box with the SMACC2 RTA. This allows developers to visualize and runtime debug the state machines they are working on. The SMACC2 RTA is closed source, but is free for individual and academic use. It can be found [here](https://robosoft.ai/product-category/smacc2-runtime-analyzer/).
+## The Problem This Solves
 
-## Repository Structure
-- `smacc2` - core library of SMACC2.
-- `smacc2_client_library` - client libraries for SMACC2, e.g., Navigation2 (`nav2z_client`), MoveIt2 (`moveit2z_client`).
-- `smacc2_event_generators` - ...
-- `smacc2_msgs` - ROS 2 messages for SMACC2 framework.
-- `smacc2_sm_reference_library` - libraries with reference implementations of state-machines used for demonstration and testing of functionalities.
-- `↓smacc2_state_reactor_library` - ...
-- `smacc2_performance_tools` - ...
+### Background
 
-## SMACC2 applications
-From it's inception, SMACC2 was written to support the programming of multi-component, complex robots. If your project involves small, solar-powered insect robots, that simply navigate towards a light source, then SMACC2 might not be the right choice for you. But if you are trying to program a robot with a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, then you've come to the right place.
+By default, SMACC2 uses a **single-threaded executor** where ROS2 callbacks (timers, subscribers, action clients) execute sequentially. This is simple and deterministic, but can be a bottleneck when:
 
-## Run a State Machine
-The easiest way to get started is by selecting one of the state machines in our [reference library](smacc2_sm_reference_library), and then hacking it to meet your needs.
+- Multiple callbacks have significant processing time
+- Callbacks involve I/O operations (network, disk, sensors)
+- You want maximum throughput for concurrent operations
 
-Each state machine in the reference library comes with it's own README.md file, which contains the appropriate operating instructions, so that all you have to do is simply copy & paste some commands into your terminal.
+### Solution
 
+SMACC2 supports ROS2's **Multi-threaded Executor** which allows callbacks to execute concurrently on multiple threads, improving throughput for I/O-bound and concurrent operations.
 
-  *  If you are looking for a minimal example, we recommend [sm_atomic](smacc2_sm_reference_library/sm_atomic).
+**Enabling it is trivial** – just one parameter change:
 
-  *  If you are looking for a minimal example but with a looping superstate, try [sm_three_some](smacc2_sm_reference_library/sm_three_some).
+```cpp
+// Single-threaded (default)
+smacc2::run<MyStateMachine>();
 
-  *  If you want to get started with the ROS Navigation stack right away, try [sm_nav2_test_7](https://github.com/robosoft-ai/nova_carter_sm_library/tree/main/sm_nav2_test_7).
+// Multi-threaded
+smacc2::run<MyStateMachine>(smacc2::ExecutionModel::MULTI_THREAD_SPINNER);
+                            //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            //  THIS IS THE ONLY CHANGE NEEDED!
+```
 
-Operating instructions can be found in each reference state machines readme file.
+---
 
-## Writing your State Machines
-There is a [state machine generator in the reference library](smacc2_sm_reference_library/create-sm-package.bash).
-To use it go to the `src` folder of your ROS 2 workspace and execute:
-  ```
-  smacc2/smacc2_sm_reference_library/create-sm-package.bash <name_of_state_machine>
-  ```
-After than compile your workspace and source it to set paths of the new package.
-Check `README.md` in new package about instructions to start newly created state machine.
+## What You'll Observe
 
-Happy Coding!
+###  Multi-threaded Mode Output
 
-## Support
-If you are interested in getting involved or need a little support, feel free to contact us by emailing techsupport@robosoft.ai
+```
+[Timer-A] Tick   1 START (Thread: 12345678) - simulating  50ms work
+[Timer-B] Tick   1 START (Thread: 87654321) - simulating 100ms work  ← Different thread!
+[Timer-A] Tick   1 END   (Thread: 12345678)
+[Timer-C] Tick   1 START (Thread: 11223344) - simulating 150ms work  ← Concurrent!
+[Timer-A] Tick   2 START (Thread: 12345678) - simulating  50ms work
+[Timer-B] Tick   1 END   (Thread: 87654321)
+[Timer-A] Tick   2 END   (Thread: 12345678)
+[Timer-D] Tick   1 START (Thread: 99887766) - simulating 200ms work
+```
+
+**Observations:**
+- ✅ **Different thread IDs** (12345678, 87654321, 11223344, 99887766)
+- ✅ **Overlapping START/END timestamps**
+- ✅ **True parallel execution**
+
+### Single-threaded Mode Output
+
+```
+[Timer-A] Tick   1 START (Thread: 12345678) - simulating  50ms work
+[Timer-A] Tick   1 END   (Thread: 12345678)
+[Timer-A] Tick   2 START (Thread: 12345678) - simulating  50ms work
+[Timer-A] Tick   2 END   (Thread: 12345678)
+[Timer-B] Tick   1 START (Thread: 12345678) - simulating 100ms work  ← Same thread
+[Timer-B] Tick   1 END   (Thread: 12345678)
+[Timer-C] Tick   1 START (Thread: 12345678) - simulating 150ms work  ← Serial execution
+```
+
+**Observations:**
+- ✅ **Same thread ID for all** (12345678)
+- ✅ **No overlapping timestamps**
+- ✅ **Serial execution** (one callback at a time)
+
+---
+
+## How It Works
+
+### Architecture
+
+The state machine consists of:
+
+1. **4 Orthogonals** – each with a timer at a different rate:
+   - `OrTimerA`: 100ms period
+   - `OrTimerB`: 250ms period
+   - `OrTimerC`: 500ms period
+   - `OrTimerD`: 1000ms period
+
+2. **Custom Client Behavior** – `CbTimerWithWorkSimulation`:
+   - Simulates work with `std::this_thread::sleep_for()`
+   - Logs thread ID on each callback
+   - Logs START/END timestamps
+   - Makes concurrency visually obvious
+
+3. **Two States**:
+   - `StConcurrentOperation`: Runs timers for 15 seconds
+   - `StComplete`: Terminal state with summary
+
+### Timer Configuration
+
+| Timer | Period | Work Duration | Purpose |
+|-------|--------|---------------|---------|
+| A | 100ms | 50ms | Fast, light work |
+| B | 250ms | 100ms | Medium, medium work |
+| C | 500ms | 150ms | Slow, heavy work |
+| D | 1000ms | 200ms | Very slow, very heavy work |
+
+The different rates and work durations create interesting interleaving patterns that clearly demonstrate concurrency.
+
+---
+
+## When to Use Multi-threaded Mode
+
+### ✅ Use Multi-threaded When:
+
+1. **Multiple concurrent ROS2 callbacks**
+   - Multiple timer callbacks
+   - Multiple subscriber callbacks
+   - Parallel action client callbacks
+
+2. **Callbacks have blocking operations**
+   - Network I/O
+   - Disk I/O
+   - Sensor data acquisition
+   - Long computations
+
+3. **Need maximum throughput**
+   - High-frequency data streams
+   - Real-time sensor fusion
+   - Parallel goal processing
+
+4. **Using callback-based patterns only**
+   - Timers ✅
+   - Subscribers ✅
+   - Action clients ✅
+   - Service clients ✅
+
+### ❌ Avoid Multi-threaded When:
+
+1. **Using `ISmaccUpdatable` pattern**
+   - Components/behaviors with `update()` method
+   - Polling-based patterns
+   - Custom periodic logic
+
+2. **Simple state machines**
+   - Minimal concurrent operations
+   - No performance bottleneck
+
+3. **Debugging complex behavior**
+   - Single-threaded is easier to trace
+   - More deterministic execution
+
+4. **Need strict determinism**
+   - Single-threaded provides guaranteed order
+   - Multi-threaded has non-deterministic scheduling
+
+---
+
+## Important Limitations
+
+### ⚠️ ISmaccUpdatable Pattern Does NOT Work
+
+**The `update()` method is never called in multi-threaded mode!**
+
+**Why?** The SignalDetector's `pollOnce()` function (which calls `update()` on all `ISmaccUpdatable` objects) is only invoked in single-threaded mode's polling loop. Multi-threaded mode uses `executor.spin()` which never calls `pollOnce()`.
+
+**Affected Patterns:**
+- ❌ Components inheriting from `ISmaccUpdatable`
+- ❌ Behaviors inheriting from `ISmaccUpdatable`
+- ❌ States inheriting from `ISmaccUpdatable`
+- ❌ Any custom `update()` methods
+
+**Solution:**
+Use ROS2 callback-based patterns instead:
+- ✅ Timer callbacks via `ClRos2Timer`
+- ✅ Subscriber callbacks via `CpTopicSubscriber`
+- ✅ Action client callbacks
+- ✅ Service client callbacks
+
+**Example Migration:**
+
+```cpp
+// ❌ DON'T: This won't work in multi-threaded mode
+class MyCb : public SmaccClientBehavior, public ISmaccUpdatable
+{
+  void update() override {
+    // This is NEVER called in multi-threaded mode!
+    checkCondition();
+  }
+};
+
+// ✅ DO: Use timer callbacks instead
+class MyCb : public SmaccClientBehavior
+{
+  void onEntry() override {
+    requiresClient(timerClient_);
+    timerComponent->onTimerTick(&MyCb::onTimerCallback, this);
+  }
+
+  void onTimerCallback() {
+    // This WILL be called in multi-threaded mode
+    checkCondition();
+  }
+};
+```
+
+---
+
+## Code Deep Dive
+
+### The One-Line Change
+
+The **only difference** between single-threaded and multi-threaded SMACC2 is in the main node file:
+
+**Multi-threaded** (`sm_multithread_test_1_node.cpp`):
+```cpp
+smacc2::run<SmMultithreadTest1>(
+  smacc2::ExecutionModel::MULTI_THREAD_SPINNER  // ← ADD THIS
+);
+```
+
+**Single-threaded** (`sm_multithread_test_1_node_single.cpp`):
+```cpp
+smacc2::run<SmMultithreadTest1>(
+  smacc2::ExecutionModel::SINGLE_THREAD_SPINNER  // ← Or omit (default)
+);
+// Equivalent to:
+smacc2::run<SmMultithreadTest1>();
+```
+
+### Implementation Details
+
+#### Signal Detector Logic
+
+From `smacc2/src/smacc2/signal_detector.cpp:365-386`:
+
+```cpp
+if (this->executionModel_ == ExecutionModel::SINGLE_THREAD_SPINNER)
+{
+  RCLCPP_INFO_STREAM(getLogger(), "[SignalDetector] Running in single-threaded mode.");
+
+  rclcpp::Rate r(loop_rate_hz);  // Default 20Hz
+  while (rclcpp::ok() && !end_)
+  {
+    pollOnce();              // ✅ Calls update() on ISmaccUpdatable objects
+    rclcpp::spin_some(nh);   // Process callbacks
+    r.sleep();
+  }
+}
+else
+{
+  RCLCPP_INFO_STREAM(getLogger(), "[SignalDetector] Running in multi-threaded mode.");
+
+  rclcpp::executors::MultiThreadedExecutor executor;
+  executor.add_node(nh);
+  executor.spin();  // ❌ pollOnce() NEVER CALLED
+}
+```
+
+**Key Insight:** Multi-threaded mode skips `pollOnce()`, so `ISmaccUpdatable::update()` is never invoked.
+
+#### Custom Behavior Implementation
+
+`cb_timer_with_work_simulation.hpp` demonstrates the pattern:
+
+```cpp
+class CbTimerWithWorkSimulation : public smacc2::SmaccClientBehavior
+{
+  void onEntry() override {
+    // Connect to timer callback
+    timerComponent->onTimerTick(&CbTimerWithWorkSimulation::onTimerCallback, this);
+  }
+
+  void onTimerCallback() {
+    auto thread_id = std::this_thread::get_id();  // Log thread ID
+    std::size_t thread_hash = std::hash<std::thread::id>{}(thread_id);
+
+    RCLCPP_INFO(getLogger(), "[Timer-%s] Tick %d START (Thread: %zu)",
+                timerName_.c_str(), tickCount_, thread_hash);
+
+    std::this_thread::sleep_for(workDuration_);  // Simulate work
+
+    RCLCPP_INFO(getLogger(), "[Timer-%s] Tick %d END   (Thread: %zu)",
+                timerName_.c_str(), tickCount_, thread_hash);
+  }
+};
+```
+
+---
+
+## Build Instructions
+
+### Prerequisites
+
+- ROS 2 (jazzy or later)
+- SMACC2 framework installed
+- `cl_ros2_timer` client library
+
+### Building
+
+```bash
+# Navigate to your workspace
+cd ~/your_workspace
+
+# Build the package
+colcon build --packages-select sm_multithread_test_1
+
+# Source the workspace
+source install/setup.bash
+```
+
+### Running
+
+```bash
+# Multi-threaded version (main demonstration)
+ros2 launch sm_multithread_test_1 sm_multithread_test_1.launch.py
+
+# Single-threaded version (for comparison)
+ros2 launch sm_multithread_test_1 sm_multithread_test_1_single.launch.py
+```
+
+---
+
+## Troubleshooting
+
+### "No matching function for call to 'run'"
+
+**Solution:** Ensure you're using a recent version of SMACC2 that supports the `ExecutionModel` parameter.
+
+### Logs show same thread ID in multi-threaded mode
+
+**Possible causes:**
+1. Launched the wrong executable (single-threaded variant)
+2. ROS 2 executor configuration issue
+
+**Check:** Look for this log line at startup:
+```
+[SignalDetector] Running in multi-threaded mode.
+```
+
+If you see "single-threaded mode", you launched the wrong variant.
+
+### Behaviors not executing
+
+**Check if they inherit from `ISmaccUpdatable`** – this pattern doesn't work in multi-threaded mode. Migrate to timer/subscriber callbacks instead.
+
+---
+
+## Further Reading
+
+### SMACC2 Documentation
+- [SMACC2 Official Docs](https://smacc2.robosoft.ai/)
+- [SMACC2 GitHub Repository](https://github.com/robosoft-ai/SMACC2)
+
+### Related Issues
+- [GitHub Issue #571](https://github.com/robosoft-ai/SMACC2/issues/571) - Original request for multithread executor documentation
+
+### ROS 2 Documentation
+- [ROS 2 Executors](https://docs.ros.org/en/jazzy/Concepts/About-Executors.html)
+- [MultiThreadedExecutor API](https://docs.ros.org/en/jazzy/p/rclcpp/generated/classrclcpp_1_1executors_1_1MultiThreadedExecutor.html)
+
+### Code Files
+- `sm_multithread_test_1_node.cpp` - Multi-threaded entry point
+- `sm_multithread_test_1_node_single.cpp` - Single-threaded entry point
+- `cb_timer_with_work_simulation.hpp` - Custom behavior with thread logging
+- `signal_detector.cpp` - SignalDetector implementation with execution model selection
+
+---
+
+## License
+
+Copyright 2025 RobosoftAI Inc.
+
+Licensed under the Apache License, Version 2.0
