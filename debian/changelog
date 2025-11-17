@@ -1,0 +1,118 @@
+ros-jazzy-smacc2 (3.0.1-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - **ROS2 Jazzy Support**: Official support for ROS2 Jazzy Jalisco
+  ### Fixed
+  - **CI Format Pipeline**: Fixed PEP 668 externally-managed-environment errors in GitHub Actions
+  ### Documentation
+  - Enhanced developer documentation for Ubuntu 24.04+ environments
+  - Added comprehensive PEP 668 compliance documentation
+  ### Contributors
+  - Brett Aldrich (@brettpac)
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Thu, 16 Jan 2025 08:00:00 -0000
+
+ros-jazzy-smacc2 (2.3.20-1bookworm) bookworm; urgency=high
+
+  ### Fixed
+  - **CRITICAL**: Fix double onExit() calls in client behaviors (#556 <https://github.com/robosoft-ai/SMACC2/issues/556>, #558 <https://github.com/robosoft-ai/SMACC2/issues/558>)
+  * Fix toggle functionality (#587 <https://github.com/robosoft-ai/SMACC2/issues/587>)
+  ### Added
+  - New cl_moveit2z client library (#638 <https://github.com/robosoft-ai/SMACC2/issues/638>)
+  - New cl_keyboard client and removal of sm_pubsub_1 (#621 <https://github.com/robosoft-ai/SMACC2/issues/621>)
+  - New cl_ros2_timer unit test (#616 <https://github.com/robosoft-ai/SMACC2/issues/616>)
+  - Nova Carter navigation behaviors (#608 <https://github.com/robosoft-ai/SMACC2/issues/608>)
+  - Progress on requiresComponent (#628 <https://github.com/robosoft-ai/SMACC2/issues/628>)
+  ### Changed
+  - Refactoring of cl_moveit2z to component-based architecture & header-only implementation (#639 <https://github.com/robosoft-ai/SMACC2/issues/639>)
+  - Refactoring cl_nav2z to remove legacy API support and update client behaviors (#625 <https://github.com/robosoft-ai/SMACC2/issues/625>)
+  - Refactor of cl_nav2z to component-based architecture (#624 <https://github.com/robosoft-ai/SMACC2/issues/624>)
+  - Refactor of cl_nav2z, moved cp_nav2_action_interface.hpp into folder (#626 <https://github.com/robosoft-ai/SMACC2/issues/626>)
+  - Refactor of cl_ros2_timer namespace structure (include paths) (#623 <https://github.com/robosoft-ai/SMACC2/issues/623>)
+  - Refactored cl_ros2_timer components to header-only (#619 <https://github.com/robosoft-ai/SMACC2/issues/619>)
+  - Refactoring cl_ros2_timer to component-based architecture (#618 <https://github.com/robosoft-ai/SMACC2/issues/618>)
+  - Refactoring cl_ros2_timer to header-lite (#617 <https://github.com/robosoft-ai/SMACC2/issues/617>)
+  - Final keyboard client refactor changes with formatting (#599 <https://github.com/robosoft-ai/SMACC2/issues/599>)
+  - Refactor keyboard client to remove cb.cpp file (#609 <https://github.com/robosoft-ai/SMACC2/issues/609>)
+  - Refactoring: renaming onOrthogonalAllocation (#600 <https://github.com/robosoft-ai/SMACC2/issues/600>)
+  - Refactor base components (#606 <https://github.com/robosoft-ai/SMACC2/issues/606>)
+  - sm_panda_moveit2z_cb_inventory refactor (#633 <https://github.com/robosoft-ai/SMACC2/issues/633>)
+  - Moving reference library from ros_timer_client and keyboard_client to cl_ros2_timer and cl_keyboard (#645 <https://github.com/robosoft-ai/SMACC2/issues/645>)
+  - Trimming sm_atomic_services and sm_atomic_24hr from sm_reference_library (#644 <https://github.com/robosoft-ai/SMACC2/issues/644>)
+  - Update ROS distribution from Galactic to Humble (#631 <https://github.com/robosoft-ai/SMACC2/issues/631>)
+  - Update include path for cl_ros2_timer (#629 <https://github.com/robosoft-ai/SMACC2/issues/629>)
+  ### Documentation
+  - Updating CLAUDE.md files (#643 <https://github.com/robosoft-ai/SMACC2/issues/643>)
+  - CLAUDE.MD file for client behavior libraries (#586 <https://github.com/robosoft-ai/SMACC2/issues/586>)
+  - Fixing sm readmes (#632 <https://github.com/robosoft-ai/SMACC2/issues/632>)
+  - Updating sm_simple_action_client launch file (#642 <https://github.com/robosoft-ai/SMACC2/issues/642>)
+  - Update README.md (#576 <https://github.com/robosoft-ai/SMACC2/issues/576>)
+  ### Contributors
+  - Pablo Iñigo Blasco (@pabloinigoblasco)
+  - Brett Aldrich (@brettpac)
+  - Jaycee Lock (@yassiezar)
+  - Crowdedlight (@Crowdedlight)
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Sat, 01 Nov 2025 07:00:00 -0000
+
+ros-jazzy-smacc2 (2.3.16-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - Merge branch 'humble' of https://github.com/robosoft-ai/SMACC2 into humble
+  ### Fixed
+  - Brettpac branch (#518 <https://github.com/robosoft-ai/SMACC2/issues/518>)
+  ### Contributors
+  - brettpac, pabloinigoblasco
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Sun, 16 Jul 2023 07:00:00 -0000
+
+ros-jazzy-smacc2 (2.3.6-1bookworm) bookworm; urgency=high
+
+
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Sun, 12 Mar 2023 08:00:00 -0000
+
+ros-jazzy-smacc2 (1.22.1-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - pre-release
+  ### Contributors
+  - pabloinigoblasco
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Wed, 09 Nov 2022 08:00:00 -0000
+
+ros-jazzy-smacc2 (0.4.0-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - Feature/fixing type string walker (#263 <https://github.com/StoglRobotics-forks/SMACC2/issues/263>)
+  - Feature/fixing husky build rolling (#258 <https://github.com/StoglRobotics-forks/SMACC2/issues/258>)
+  - Merging code from backport foxy and updates about autoware (#208 <https://github.com/StoglRobotics-forks/SMACC2/issues/208>)
+  - wharehouse2 progress (#179 <https://github.com/StoglRobotics-forks/SMACC2/issues/179>)
+  - Feature/aws navigation sm dance bot (#174 <https://github.com/StoglRobotics-forks/SMACC2/issues/174>)
+  - Feature/sm dance bot strikes back refactoring (#152 <https://github.com/StoglRobotics-forks/SMACC2/issues/152>)
+  - Feature/cb pause slam (#98 <https://github.com/StoglRobotics-forks/SMACC2/issues/98>)
+  - Merge branch 'renameTracingEvents' of https://github.com/DecDury/SMACC2 into DecDury-renameTracingEvents
+  ### Contributors
+  - David Revay, DecDury, Denis Štogl, Pablo Iñigo Blasco, pabloinigoblasco, reelrbtx
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Mon, 04 Apr 2022 07:00:00 -0000
+
+ros-jazzy-smacc2 (0.1.0-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - Initial release of SMACC2 core
+  ### Contributors
+  - Brett Aldrich, Pablo Inigo Blasco, Denis Štogl
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Tue, 31 Aug 2021 07:00:00 -0000
+
+ros-jazzy-smacc2 (0.0.0-1bookworm) bookworm; urgency=high
+
+  ### Added
+  - Initial release of SMACC2 core
+  ### Contributors
+  - Pablo Inigo Blasco
+
+ -- Pablo Inigo Blasco <pablo@ibrobotics.com>  Mon, 30 Aug 2021 07:00:00 -0000
+
+
