@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-panda-cl-moveit2z-cb-inventory
+Section: misc
+Priority: optional
+Maintainer: SMACC2 is cool <smacc2@smacc2.cool>
+Build-Depends: debhelper (>= 9.0.0), libboost-thread-dev, libyaml-cpp-dev, ros-jazzy-ament-cmake, ros-jazzy-cl-keyboard, ros-jazzy-cl-moveit2z, ros-jazzy-cl-ros2-timer, ros-jazzy-controller-manager, ros-jazzy-joint-state-broadcaster, ros-jazzy-moveit, ros-jazzy-moveit-planners-chomp, ros-jazzy-moveit-planners-ompl, ros-jazzy-moveit-plugins, ros-jazzy-moveit-resources-panda-moveit-config, ros-jazzy-moveit-ros-robot-interaction, ros-jazzy-moveit-simple-controller-manager, ros-jazzy-moveit-visual-tools, ros-jazzy-pilz-industrial-motion-planner, ros-jazzy-rclcpp, ros-jazzy-robot-state-publisher, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-panda-cl-moveit2z-cb-inventory
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-thread-dev, libyaml-cpp-dev, ros-jazzy-cl-keyboard, ros-jazzy-cl-moveit2z, ros-jazzy-cl-ros2-timer, ros-jazzy-controller-manager, ros-jazzy-joint-state-broadcaster, ros-jazzy-joint-trajectory-controller, ros-jazzy-moveit, ros-jazzy-moveit-planners-chomp, ros-jazzy-moveit-planners-ompl, ros-jazzy-moveit-plugins, ros-jazzy-moveit-resources-panda-moveit-config, ros-jazzy-moveit-ros-robot-interaction, ros-jazzy-moveit-simple-controller-manager, ros-jazzy-moveit-visual-tools, ros-jazzy-pilz-industrial-motion-planner, ros-jazzy-rclcpp, ros-jazzy-robot-state-publisher, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: The sm_panda_cl_moveit2z_cb_inventory package
