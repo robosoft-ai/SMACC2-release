@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-three-some
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <techsupport@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-keyboard, ros-jazzy-cl-ros2-timer, ros-jazzy-multirole-sensor-client, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-sr-all-events-go, ros-jazzy-std-msgs, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-three-some
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-cl-keyboard, ros-jazzy-cl-ros2-timer, ros-jazzy-multirole-sensor-client, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-sr-all-events-go, ros-jazzy-std-msgs, xterm, ros-jazzy-ros-workspace
+Description: The sm_three_some package
