@@ -1,3 +1,57 @@
+## smacc2 (jazzy) - 3.0.1-1
+
+The packages in the `smacc2` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release smacc2 --rosdistro jazzy --track jazzy --unsafe` on `Mon, 17 Nov 2025 00:32:05 -0000`
+
+These packages were released:
+- `cl_keyboard`
+- `cl_moveit2z`
+- `cl_nav2z`
+- `cl_ros2_timer`
+- `eg_conditional_generator`
+- `eg_random_generator`
+- `http_client`
+- `lifecyclenode_client`
+- `multirole_sensor_client`
+- `sm_advanced_recovery_1`
+- `sm_atomic`
+- `sm_atomic_http`
+- `sm_atomic_lifecycle`
+- `sm_atomic_mode_states`
+- `sm_atomic_performance_trace_1`
+- `sm_atomic_subscribers_performance_test`
+- `sm_branching`
+- `sm_cl_keyboard_unit_test_1`
+- `sm_cl_ros2_timer_unit_test_1`
+- `sm_coretest_transition_speed_1`
+- `sm_multi_stage_1`
+- `sm_multithread_test_1`
+- `sm_pack_ml`
+- `sm_panda_cl_moveit2z_cb_inventory`
+- `sm_simple_action_client`
+- `sm_three_some`
+- `smacc2`
+- `smacc2_msgs`
+- `sr_all_events_go`
+- `sr_conditional`
+- `sr_event_countdown`
+
+Version of package(s) in repository `smacc2`:
+
+- upstream repository: https://github.com/robosoft-ai/SMACC2.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `3.0.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.13.0`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## smacc2 (humble) - 2.3.20-2
 
 The packages in the `smacc2` repository were released into the `humble` distro by running `/home/brettpac/.local/bin/bloom-release smacc2 --rosdistro humble --track humble` on `Sat, 01 Nov 2025 11:50:10 -0000`
