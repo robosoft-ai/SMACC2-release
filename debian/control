@@ -1,0 +1,12 @@
+Source: ros-jazzy-http-client
+Section: misc
+Priority: optional
+Maintainer: Jaycee Lock <jaycee.lock@proton.me>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-http-client
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: The http_client package
