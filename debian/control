@@ -1,0 +1,12 @@
+Source: ros-jazzy-sr-all-events-go
+Section: misc
+Priority: optional
+Maintainer: Pablo Iñigo Blasco <pablo@ibrobotics.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-smacc2, ros-jazzy-smacc2-msgs, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sr-all-events-go
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-smacc2, ros-jazzy-smacc2-msgs, ros-jazzy-ros-workspace
+Description: The sr_all_events_go package
