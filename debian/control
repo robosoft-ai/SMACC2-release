@@ -1,0 +1,12 @@
+Source: ros-jazzy-cl-keyboard
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <brett@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-smacc2, ros-jazzy-std-msgs, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-cl-keyboard
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-smacc2, ros-jazzy-std-msgs, ros-jazzy-ros-workspace
+Description: The cl_keyboard package
