@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,12 +46,6 @@ public:
 
   void onEntry() override;
 
-  // template <typename TOrthogonal, typename TSourceObject>
-  // void onOrthogonalAllocation()
-  // {
-  //   smacc2::SmaccAsyncClientBehavior::onOrthogonalAllocation<TOrthogonal, TSourceObject>();
-  // }
-
   void onExit() override { sequenceNodes_.clear(); }
 
   template <typename TOrthogonal, typename TBehavior, typename... Args>
@@ -66,7 +60,7 @@ public:
       auto createdBh = std::shared_ptr<TBehavior>(new TBehavior(args...));
 
       this->getCurrentState()->getOrthogonal<TOrthogonal>()->addClientBehavior(createdBh);
-      createdBh->template onOrthogonalAllocation<TOrthogonal, TBehavior>();
+      createdBh->template onStateOrthogonalAllocation<TOrthogonal, TBehavior>();
 
       return createdBh;
     };
@@ -82,8 +76,8 @@ private:
   void recursiveConsumeNext();
 
   std::list<std::function<std::shared_ptr<smacc2::SmaccAsyncClientBehavior>()>> sequenceNodes_;
-  boost::signals2::connection conn_;
-  boost::signals2::connection conn2_;
+  smacc2::SmaccSignalConnection conn_;
+  smacc2::SmaccSignalConnection conn2_;
 
   std::shared_ptr<smacc2::SmaccAsyncClientBehavior> bh_;
   std::atomic<int> consume_{0};
