@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -290,8 +290,7 @@ public:
       egh->configureEventGenerator(eg);
       eg->initialize(state);
 
-      eg->template onOrthogonalAllocation<
-        MostDerived, TEventGenerator>();  // deprecated to extinguish in future
+      eg->template onStateOrthogonalAllocation<MostDerived, TEventGenerator>();
       eg->template onStateOrthogonalAllocation<MostDerived, TEventGenerator>();
       return eg;
     };
