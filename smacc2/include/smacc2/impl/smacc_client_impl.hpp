@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -124,7 +124,6 @@ SmaccComponentType * ISmaccClient::createNamedComponent(std::string name, TArgs.
     ret = dynamic_pointer_cast<SmaccComponentType>(it->second);
   }
 
-  ret->template onOrthogonalAllocation<TOrthogonal, TClient>();
   ret->template onStateOrthogonalAllocation<TOrthogonal, TClient>();
 
   return ret.get();
