@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ public:
   const std::map<std::string, std::shared_ptr<smacc2::ISmaccOrthogonal>> & getOrthogonals() const;
 
   template <typename SmaccComponentType>
-  void requiresComponent(SmaccComponentType *& storage, bool throwsExceptionIfNotExist = false);
+  void requiresComponent(SmaccComponentType *& storage, ComponentRequirement requirementType);
 
   template <typename EventType>
   void postEvent(EventType * ev, EventLifeTime evlifetime = EventLifeTime::ABSOLUTE);
@@ -128,7 +128,7 @@ public:
     std::shared_ptr<smacc2_msgs::srv::SmaccGetTransitionHistory::Response> res);
 
   template <typename TSmaccSignal, typename TMemberFunctionPrototype, typename TSmaccObjectType>
-  boost::signals2::connection createSignalConnection(
+  smacc2::SmaccSignalConnection createSignalConnection(
     TSmaccSignal & signal, TMemberFunctionPrototype callback, TSmaccObjectType * object);
 
   void disconnectSmaccSignalObject(void * object);
@@ -198,8 +198,6 @@ protected:
 
   // orthogonals
   std::map<std::string, std::shared_ptr<smacc2::ISmaccOrthogonal>> orthogonals_;
-
-  std::vector<boost::signals2::scoped_connection> longLivedSignalConnections_;
 
 protected:
   std::shared_ptr<SmaccStateMachineInfo> stateMachineInfo_;
