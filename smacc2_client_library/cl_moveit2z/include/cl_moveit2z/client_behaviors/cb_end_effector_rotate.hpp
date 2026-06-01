@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public:
   {
     // Use CpTfListener component for transform lookups
     CpTfListener * tfListener = nullptr;
-    this->requiresComponent(tfListener, false);  // Optional component
+    this->requiresComponent(tfListener, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     tf2::Stamped<tf2::Transform> endEffectorInPivotFrame;
 
