@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 //#include <smacc2/smacc_signal.h>
 #include <smacc2/smacc.hpp>
 
-#include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
+#include <moveit/move_group_interface/move_group_interface.hpp>
+#include <moveit/planning_scene_interface/planning_scene_interface.hpp>
 
 #include <geometry_msgs/msg/transform.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
@@ -112,7 +112,7 @@ public:
   }
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  void onStateOrthogonalAllocation()
   {
     postEventMotionExecutionSucceded_ = [=]()
     {
@@ -128,13 +128,13 @@ public:
   }
 
   template <typename TCallback, typename T>
-  boost::signals2::connection onMotionExecutionSuccedded(TCallback callback, T * object)
+  smacc2::SmaccSignalConnection onMotionExecutionSuccedded(TCallback callback, T * object)
   {
     return this->getStateMachine()->createSignalConnection(onSucceded_, callback, object);
   }
 
   template <typename TCallback, typename T>
-  boost::signals2::connection onMotionExecutionFailed(TCallback callback, T * object)
+  smacc2::SmaccSignalConnection onMotionExecutionFailed(TCallback callback, T * object)
   {
     return this->getStateMachine()->createSignalConnection(onFailed_, callback, object);
   }
