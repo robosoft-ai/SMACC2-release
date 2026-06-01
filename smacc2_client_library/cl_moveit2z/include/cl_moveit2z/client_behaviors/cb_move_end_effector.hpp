@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -81,7 +81,8 @@ protected:
 
     // Try to use CpMotionPlanner component (preferred)
     CpMotionPlanner * motionPlanner = nullptr;
-    this->requiresComponent(motionPlanner, false);  // Optional component
+    this->requiresComponent(
+      motionPlanner, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     bool success = false;
     moveit::planning_interface::MoveGroupInterface::Plan computedMotionPlan;
@@ -143,7 +144,8 @@ protected:
     {
       // Try to use CpTrajectoryExecutor component (preferred)
       CpTrajectoryExecutor * trajectoryExecutor = nullptr;
-      this->requiresComponent(trajectoryExecutor, false);  // Optional component
+      this->requiresComponent(
+        trajectoryExecutor, smacc2::ComponentRequirement::SOFT);  // Optional component
 
       bool executionSuccess = false;
 
