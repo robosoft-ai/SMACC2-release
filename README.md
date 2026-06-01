@@ -1,119 +1,355 @@
-# SMACC2
+# cl_gcalcli - SMACC2 Google Calendar Client
 
-SMACC2 is an event-driven, asynchronous, behavioral state machine library for real-time ROS 2 (Robotic Operating System) applications written in C++, designed to allow programmers to build robot control applications for multicomponent robots, in an intuitive and systematic manner.
+A SMACC2 client library for Google Calendar integration via the `gcalcli` CLI tool. This client enables state machines to react to Google Calendar events.
 
-## Repository Status, Packages and Documentation
+## Prerequisites
 
-ROS 2 Distro | Branch | Build status | Documentation | Released packages
-:---------: | :----: | :----------: | :-----------: | :---------------:
-**Foxy** | [`foxy`](https://github.com/robosoft-ai/SMACC2/tree/foxy) | [![Foxy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml?branch=foxy) <br /> [![Foxy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml?branch=foxy) | [![Doxygen Doc Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/foxy/html/namespaces.html) | [![ROS Build Farm](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?style=plastic&subject=ros-buildfarm&status=E.O.L&color=lightgray)](http://docs.ros.org/en/humble/Releases/End-of-Life.html) <br/>[SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#foxy)
-**Humble** | [`humble`](https://github.com/robosoft-ai/SMACC2/tree/humble) | [![Humble Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml?branch=humble)<br/> [![Humble Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml?branch=humble) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/humble/html/namespaces.html)| [![Build Status](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?subject=ros-buildfarm)](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/)<br/> [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#humble)
-**Jazzy** | [`jazzy`](https://github.com/robosoft-ai/SMACC2/tree/jazzy) | [![Jazzy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml?branch=jazzy) <br /> [![Jazzy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml?branch=jazzy) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/jazzy/html/namespaces.html) | [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#jazzy)
+- gcalcli installed and authenticated (`pip install gcalcli`)
+- Google Calendar API credentials configured
+- ROS2 and SMACC2 installed
 
-**NOTE**: There are three build stages checking current and future compatibility of the package.
+## Architecture
 
-1. Binary builds - against released packages (main and testing) in ROS distributions. Shows that direct local build is possible.
+```
+ClGcalcli (Orchestrator)
+    ├── CpSubprocessExecutor (smacc2 core - generic subprocess execution)
+    ├── CpGcalcliConnection (connection health monitoring)
+    ├── CpCalendarPoller (agenda polling + TSV parsing)
+    └── CpCalendarEventListener (pattern matching + event dispatch)
+```
 
-   Uses repos file: `src/SMACC2/.github/SMACC2-not-released.<ros-distro>.repos`
+## Components
 
-1. Semi-binary builds - against released core ROS packages (main and testing), but the immediate dependencies are pulled from source.
-   Shows that local build with dependencies is possible and if fails there we can expect that after the next package sync we will not be able to build.
+| Component | Purpose |
+|-----------|---------|
+| `CpSubprocessExecutor` | Generic subprocess execution (smacc2 core) |
+| `CpGcalcliConnection` | Connection health monitoring, heartbeat, authentication |
+| `CpCalendarPoller` | Periodic agenda fetching and parsing |
+| `CpCalendarEventListener` | Event pattern matching and triggering |
 
-   Uses repos file: `src/SMACC2/.github/SMACC2.repos`
+## Client Behaviors
 
-1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+| Behavior | Type | Purpose |
+|----------|------|---------|
+| `CbDetectCalendarEvent` | Async | Wait until matching event's start time arrives |
+| `CbStatus` | Sync | Get connection state and current events |
+| `CbWaitConnection` | Async | Wait for gcalcli connection with timeout |
+| `CbMonitorConnection` | Sync | Continuous connection monitoring |
+| `CbQuickAdd` | Async | Add event via `gcalcli quick` |
+| `CbRefreshAgenda` | Sync | Force immediate agenda refresh |
 
-## Getting started - ROS Jazzy
+### CbDetectCalendarEvent Parameters
 
-1. [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html).
+```cpp
+configure_orthogonal<OrCalendar, CbDetectCalendarEvent>("TestEvent", false, 5);
+//                                                       pattern    regex  minutes_before
+```
 
-2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
-   ```
-   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
-   ```
-3. Create a new ROS 2 workspace if necessary:
-   ```
-   export COLCON_WS=~/workspace/jazzy_ws
-   mkdir -p $COLCON_WS/src
-   ```
-4. Or just navigate to your workspace source folder:
-   ```
-   cd ~/workspace/jazzy_ws/src
-   ```
-5. Clone the repo:
-   ```
-   git clone https://github.com/robosoft-ai/SMACC2.git
-   ```
-6. Checkout the Jazzy branch:
-   ```
-   cd ~/workspace/jazzy_ws/src/SMACC2
-   git checkout jazzy
-   ```
-7. Navigate to the workspace:
-   ```
-   cd ~/workspace/jazzy_ws
-   ```
-8. Update System:
-   ```
-   sudo apt update
-   sudo apt upgrade
-   ```
-9. Source the workspace:
-   ```
-   source /opt/ros/jazzy/setup.bash
-   ```
-10. Update dependencies:
-   ```
-   rosdep update
-   ```
-11. Pull relevant packages and install dependencies:
-   ```
-   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.jazzy.repos
-   rosdep install --ignore-src --from-paths src -y -r
-   ```
-12. Compile:
-   ```
-   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
-   ```
+The `minutes_before` parameter controls when the behavior triggers relative to the event's start time. The value `5` means "trigger 5 minutes before the event's start time."
 
+This is intentional - it allows the robot/system to prepare before a meeting actually starts. You can change it:
 
-## Features
- *  ***Powered by ROS 2:*** SMACC2 has been developed specifically to work with ROS 2. It supports ROS 2 topics, services and actions, right out of the box.
- *   ***Written in C++:*** Until now, ROS 2 has lacked a library to develop task-level behavioral state machines in C++. Although libraries have been developed in scripting languages such as python, these are unsuitable for real-world industrial environments where real-time requirements are demanded.
- *   ***Orthogonals:*** Originally conceived by David Harel in 1987, orthogonality is absolutely crucial to developing state machines for complex robotic systems. This is because complex robots are always a collection of hardware devices which require communication protocols, start-up determinism, etc. With orthogonals, it is an intuitive and relatively straight forward exercise (at least conceptually;) to code a state machine for a robot comprising a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, for instance.
- *  ***Static State Machine Checking:*** One of the features that SMACC2 inherits from Boost Statechart is that you get compile time validation checking. This benefits developers in that the amount of runtime testing necessary to ship quality software that is both stable and safe is dramatically reduced. Our philosophy is "Wherever possible, let the compiler do it".
- *  ***State Machine Reference Library:*** With a constantly growing library of out-of-the-box reference state machines, (found in the folder [sm_reference_library](smacc2_sm_reference_library)) guaranteed to compile and run, you can jumpstart your development efforts by choosing a reference machine that is closest to your needs, and then customize and extend to meet the specific requirements of your robotic application. All the while knowing that the library supports advanced functionalities that are practically universal among actual working robots.
- *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the cl_ros2_timer, the multi_role_sensor_client, and a cl_keyboard used extensively for state machine drafting & debugging.
-  *  ***Extensive Documentation:*** Although many ROS users are familiar with doxygen, our development team has spent a lot of time researching the more advanced features of doxygen such as uml style class diagrams and call graphs, and we've used them to document the SMACC2 library. Have a look to [our doxygen sites](https://robosoft-ai.github.io/smacc2_doxygen/master/html/namespaces.html) and we think you'll be blown away at what Doxygen looks like when [it's done right](https://robosoft-ai.github.io/smacc2_doxygen/master/html/classsmacc2_1_1ISmaccStateMachine.html) and it becomes a powerful tool to research a codebase.
-  *  ***SMACC2 Runtime Analyzer:*** The SMACC2 library works out of the box with the SMACC2 RTA. This allows developers to visualize and runtime debug the state machines they are working on. The SMACC2 RTA is closed source, but is free for individual and academic use. It can be found [here](https://robosoft.ai/product-category/smacc2-runtime-analyzer/).
+- `0` = trigger exactly at start time
+- `5` = trigger 5 minutes early
+- `10` = trigger 10 minutes early
 
-## Repository Structure
-- `smacc2` - core library of SMACC2.
-- `smacc2_client_library` - client libraries for SMACC2, e.g., Navigation2 (`nav2z_client`), MoveIt2 (`moveit2z_client`).
-- `smacc2_event_generators` - ...
-- `smacc2_msgs` - ROS 2 messages for SMACC2 framework.
-- `smacc2_sm_reference_library` - libraries with reference implementations of state-machines used for demonstration and testing of functionalities.
-- `↓smacc2_state_reactor_library` - ...
-- `smacc2_performance_tools` - ...
+If you want to trigger at the actual start time, change it to:
 
-## SMACC2 applications
-From it's inception, SMACC2 was written to support the programming of multi-component, complex robots. If your project involves small, solar-powered insect robots, that simply navigate towards a light source, then SMACC2 might not be the right choice for you. But if you are trying to program a robot with a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, then you've come to the right place.
+```cpp
+configure_orthogonal<OrCalendar, CbDetectCalendarEvent>("TestEvent", false, 0);
+```
 
-## Run a State Machine
-The easiest way to get started is by selecting one of the state machines in our [reference library](smacc2_sm_reference_library), and then hacking it to meet your needs.
+## Events
 
-Each state machine in the reference library comes with it's own README.md file, which contains the appropriate operating instructions, so that all you have to do is simply copy & paste some commands into your terminal.
+```cpp
+// Connection events
+EvConnectionLost<TSource, TOrthogonal>
+EvConnectionRestored<TSource, TOrthogonal>
+EvAuthenticationRequired<TSource, TOrthogonal>
 
+// Calendar events
+EvCalendarEventDetected<TSource, TOrthogonal>  // Contains: event, matched_pattern
+EvCalendarEventStarted<TSource, TOrthogonal>   // Contains: event
+EvCalendarEventEnded<TSource, TOrthogonal>     // Contains: event
+EvAgendaUpdated<TSource, TOrthogonal>          // Contains: events vector
+```
 
-  *  If you are looking for a minimal example, we recommend [sm_atomic](smacc2_sm_reference_library/sm_atomic).
+## Usage Example
 
-  *  If you are looking for a minimal example but with a looping superstate, try [sm_three_some](smacc2_sm_reference_library/sm_three_some).
+### Orthogonal Setup
 
-  *  If you want to get started with the ROS Navigation stack right away, try [sm_nav2_test_7](https://github.com/robosoft-ai/nova_carter_sm_library/tree/main/sm_nav2_test_7).
+```cpp
+#include <cl_gcalcli/cl_gcalcli.hpp>
+#include <cl_gcalcli/client_behaviors.hpp>
 
-Operating instructions can be found in each reference state machines readme file.
+class OrCalendar : public smacc2::Orthogonal<OrCalendar>
+{
+  void onInitialize() override
+  {
+    cl_gcalcli::GcalcliConfig config;
+    config.gcalcli_path = "gcalcli";  // from PATH
+    config.poll_interval = std::chrono::seconds{30};
+    config.heartbeat_interval = std::chrono::seconds{60};
+    config.agenda_days = 7;
 
-Happy Coding!
+    this->createClient<cl_gcalcli::ClGcalcli>(config);
+  }
+};
+```
 
-## Support
-If you are interested in getting involved or need a little support, feel free to contact us by emailing techsupport@robosoft.ai
+### State Machine Example
+
+```cpp
+#include <cl_gcalcli/cl_gcalcli.hpp>
+#include <cl_gcalcli/client_behaviors.hpp>
+#include <cl_gcalcli/events.hpp>
+
+using namespace cl_gcalcli;
+
+// Wait for connection state
+struct StWaitConnection : smacc2::SmaccState<StWaitConnection, SmMain>
+{
+  using reactions = mpl::list<
+    Transition<EvCbSuccess<CbWaitConnection, OrCalendar>, StWaitForMeeting>,
+    Transition<EvCbFailure<CbWaitConnection, OrCalendar>, StConnectionError>
+  >;
+
+  static void staticConfigure()
+  {
+    configure<OrCalendar, CbWaitConnection>(std::chrono::seconds{30});
+  }
+};
+
+// Wait for meeting to start
+struct StWaitForMeeting : smacc2::SmaccState<StWaitForMeeting, SmMain>
+{
+  using reactions = mpl::list<
+    // Transition when "Standup" event START TIME arrives (5 min before)
+    Transition<EvCbSuccess<CbDetectCalendarEvent, OrCalendar>, StMeetingStarted>,
+    // Handle connection loss
+    Transition<EvConnectionLost<CpGcalcliConnection, OrCalendar>, StConnectionError>
+  >;
+
+  static void staticConfigure()
+  {
+    // Wait for "Standup" (regex), trigger 5 minutes before start time
+    configure<OrCalendar, CbDetectCalendarEvent>(".*Standup.*", /*regex=*/true, /*minutes_before=*/5);
+    // Monitor connection health
+    configure<OrCalendar, CbMonitorConnection>();
+  }
+};
+
+// Meeting started state
+struct StMeetingStarted : smacc2::SmaccState<StMeetingStarted, SmMain>
+{
+  static void staticConfigure()
+  {
+    configure<OrCalendar, CbStatus>();
+  }
+
+  void onEntry()
+  {
+    // Access detected event from behavior
+    CbDetectCalendarEvent* behavior;
+    this->getOrthogonal<OrCalendar>()->getClientBehavior(behavior);
+    if (behavior)
+    {
+      auto event = behavior->getDetectedEvent();
+      if (event)
+      {
+        RCLCPP_INFO(getLogger(), "Meeting: %s", event->title.c_str());
+      }
+    }
+  }
+};
+```
+
+### Quick Add Example
+
+```cpp
+struct StAddEvent : smacc2::SmaccState<StAddEvent, SmMain>
+{
+  using reactions = mpl::list<
+    Transition<EvCbSuccess<CbQuickAdd, OrCalendar>, StDone>,
+    Transition<EvCbFailure<CbQuickAdd, OrCalendar>, StError>
+  >;
+
+  static void staticConfigure()
+  {
+    configure<OrCalendar, CbQuickAdd>("Team meeting tomorrow at 3pm for 1 hour");
+  }
+};
+```
+
+## Configuration
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `gcalcli_path` | `"gcalcli"` | Path to gcalcli executable |
+| `config_folder` | `std::nullopt` | Optional gcalcli config folder |
+| `calendars` | `{}` | Calendars to monitor (empty = all) |
+| `poll_interval` | `30s` | How often to poll agenda |
+| `heartbeat_interval` | `60s` | How often to check connection |
+| `agenda_days` | `7` | Days ahead to fetch |
+| `max_consecutive_failures` | `3` | Failures before connection lost |
+
+## Data Structures
+
+### CalendarEvent
+
+```cpp
+struct CalendarEvent {
+  std::string id;
+  std::string title;
+  std::string calendar_name;
+  std::string location;
+  std::string description;
+  std::chrono::system_clock::time_point start_time;
+  std::chrono::system_clock::time_point end_time;
+  bool is_all_day;
+
+  bool isActiveNow() const;
+  bool willStartWithinMinutes(int minutes) const;
+  bool hasEnded() const;
+  int minutesUntilStart() const;
+};
+```
+
+### EventWatch
+
+```cpp
+struct EventWatch {
+  std::string pattern;       // Pattern to match event titles
+  bool use_regex = false;    // True = regex, False = substring match
+  int minutes_before = 0;    // Trigger N minutes before start
+  bool trigger_on_start = true;
+  bool trigger_on_end = false;
+  bool continuous = false;   // Keep watching or one-shot
+};
+```
+
+## Dependencies
+
+- smacc2
+- Boost (thread, regex)
+- gcalcli (external CLI tool)
+
+## Getting Started
+
+### Step 1: Install gcalcli
+
+```bash
+# Option A: Using apt (Debian/Ubuntu)
+sudo apt install gcalcli
+
+# Option B: Using pipx (recommended for latest version)
+pipx install gcalcli
+```
+
+### Step 2: Set Up Google Calendar API Credentials
+
+The default gcalcli OAuth token is restricted. You need to create your own Google API credentials:
+
+#### 2.1 Create a Google Cloud Project
+
+1. Go to https://console.cloud.google.com/
+2. Click "Select a project" → "New Project"
+3. Name it something like `gcalcli-personal`
+4. Click **Create**
+
+#### 2.2 Enable the Calendar API
+
+1. Go to **APIs & Services** → **Library**
+2. Search for "Google Calendar API"
+3. Click on it and click **Enable**
+
+#### 2.3 Configure OAuth Consent Screen
+
+1. Go to **APIs & Services** → **OAuth consent screen**
+2. Select **External** → **Create**
+3. Fill in:
+   - App name: `gcalcli`
+   - User support email: your email
+   - Developer contact: your email
+4. Click **Save and Continue**
+5. On Scopes page, click **Add or Remove Scopes**
+6. Add: `https://www.googleapis.com/auth/calendar`
+7. Click **Save and Continue**
+8. Add your email as a test user
+9. Click **Save and Continue**
+
+#### 2.4 Create OAuth Credentials
+
+1. Go to **APIs & Services** → **Credentials**
+2. Click **Create Credentials** → **OAuth client ID**
+3. Application type: **Desktop app**
+4. Name: `gcalcli`
+5. Click **Create**
+6. Copy the **Client ID** and **Client Secret**
+
+### Step 3: Initialize gcalcli
+
+```bash
+gcalcli --client-id=YOUR_CLIENT_ID.apps.googleusercontent.com init
+```
+
+When prompted, enter your Client Secret. A browser window will open for OAuth authentication.
+
+### Step 4: Verify Installation
+
+```bash
+# List your calendars
+gcalcli list
+
+# View upcoming events
+gcalcli agenda
+```
+
+## Troubleshooting
+
+### OAuth Redirect Failed
+
+If you see "Unable to start local webserver on port 8080", old gcalcli processes may be blocking the port:
+
+```bash
+# Kill any stuck gcalcli processes
+pkill -f gcalcli
+
+# Try again
+gcalcli --client-id=YOUR_CLIENT_ID.apps.googleusercontent.com init
+```
+
+### Creating a Dedicated Robot Calendar
+
+For testing or robot-specific events, create a separate calendar:
+
+1. Go to https://calendar.google.com/
+2. Click the **+** next to "Other calendars"
+3. Select "Create new calendar"
+4. Name it (e.g., "Robot")
+5. Click **Create calendar**
+
+Then configure cl_gcalcli to use it:
+
+```cpp
+cl_gcalcli::GcalcliConfig config;
+config.calendars = {"Robot"};  // Only monitor this calendar
+this->createClient<cl_gcalcli::ClGcalcli>(config);
+```
+
+### Testing Event Detection
+
+Create a test event and verify detection:
+
+```bash
+# Create an event 10 minutes from now
+gcalcli --calendar="Robot" quick "TestEvent at 2:30pm today for 15 minutes"
+
+# Verify it appears
+gcalcli --calendar="Robot" agenda
+```
+
+## Reference
+
+- [gcalcli GitHub](https://github.com/insanum/gcalcli)
+- [gcalcli API Auth Documentation](https://github.com/insanum/gcalcli/blob/HEAD/docs/api-auth.md)
