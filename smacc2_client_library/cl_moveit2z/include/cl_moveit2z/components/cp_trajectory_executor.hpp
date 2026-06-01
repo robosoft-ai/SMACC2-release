@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #include <cl_moveit2z/cl_moveit2z.hpp>
 #include <cl_moveit2z/components/cp_trajectory_history.hpp>
 
-#include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/move_group_interface/move_group_interface.hpp>
 #include <moveit_msgs/msg/move_it_error_codes.hpp>
 #include <moveit_msgs/msg/robot_trajectory.hpp>
 
@@ -87,7 +87,7 @@ public:
     this->requiresClient(moveit2zClient_);
 
     // CpTrajectoryHistory is optional but recommended
-    this->requiresComponent(trajectoryHistory_, false);
+    this->requiresComponent(trajectoryHistory_, smacc2::ComponentRequirement::SOFT);
 
     if (trajectoryHistory_)
     {
