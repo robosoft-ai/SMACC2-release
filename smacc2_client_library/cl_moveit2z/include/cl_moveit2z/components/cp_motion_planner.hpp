@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 
 #include <cl_moveit2z/cl_moveit2z.hpp>
 
-#include <moveit/move_group_interface/move_group_interface.h>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include <moveit/move_group_interface/move_group_interface.hpp>
 #include <moveit_msgs/msg/move_it_error_codes.hpp>
 #include <moveit_msgs/msg/robot_trajectory.hpp>
 
@@ -242,7 +242,7 @@ public:
    */
   inline PlanningResult planCartesianPath(
     const std::vector<geometry_msgs::msg::Pose> & waypoints, double maxStep = 0.01,
-    double jumpThreshold = 0.0, bool avoidCollisions = true)
+    double /*jumpThreshold*/ = 0.0, bool avoidCollisions = true)
   {
     PlanningResult result;
 
@@ -269,8 +269,8 @@ public:
         waypoints.size());
 
       moveit_msgs::msg::RobotTrajectory trajectory;
-      double fractionAchieved = moveGroup->computeCartesianPath(
-        waypoints, maxStep, jumpThreshold, trajectory, avoidCollisions);
+      double fractionAchieved =
+        moveGroup->computeCartesianPath(waypoints, maxStep, trajectory, avoidCollisions);
 
       result.plan.trajectory = trajectory;
 
