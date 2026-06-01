@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,13 +47,13 @@ struct EvActionFeedback : sc::event<EvActionFeedback<ActionFeedback, TOrthogonal
 template <typename TSource, typename TOrthogonal>
 struct EvActionResult : sc::event<EvActionResult<TSource, TOrthogonal>>
 {
-  // typename TSource::WrappedResult resultMessage;
+  typename TSource::WrappedResult resultMessage;
 };
 
 template <typename TSource, typename TOrthogonal>
 struct EvActionSucceeded : sc::event<EvActionSucceeded<TSource, TOrthogonal>>
 {
-  // typename TSource::WrappedResult resultMessage;
+  typename TSource::WrappedResult resultMessage;
 
   static std::string getEventLabel()
   {
@@ -71,7 +71,7 @@ struct EvActionSucceeded : sc::event<EvActionSucceeded<TSource, TOrthogonal>>
 template <typename TSource, typename TOrthogonal>
 struct EvActionAborted : sc::event<EvActionAborted<TSource, TOrthogonal>>
 {
-  // typename TSource::WrappedResult resultMessage;
+  typename TSource::WrappedResult resultMessage;
 
   static std::string getEventLabel()
   {
@@ -89,7 +89,7 @@ struct EvActionAborted : sc::event<EvActionAborted<TSource, TOrthogonal>>
 template <typename TSource, typename TOrthogonal>
 struct EvActionCancelled : sc::event<EvActionCancelled<TSource, TOrthogonal>>
 {
-  //typename TSource::WrappedResult resultMessage;
+  typename TSource::WrappedResult resultMessage;
 
   static std::string getEventLabel()
   {
@@ -102,6 +102,50 @@ struct EvActionCancelled : sc::event<EvActionCancelled<TSource, TOrthogonal>>
   static std::string getDefaultTransitionTag() { return demangledTypeName<CANCEL>(); }
 
   static std::string getDefaultTransitionType() { return demangledTypeName<CANCEL>(); }
+};
+
+//-------------- SERVICE EVENTS --------------------------------------------------------
+template <typename TSource, typename TOrthogonal, typename TResponse>
+struct EvServiceResponse : sc::event<EvServiceResponse<TSource, TOrthogonal, TResponse>>
+{
+  TResponse response;
+
+  static std::string getEventLabel()
+  {
+    std::string label;
+    EventLabel<TSource>(label);
+    return label;
+  }
+
+  static std::string getDefaultTransitionTag() { return demangledTypeName<SUCCESS>(); }
+
+  static std::string getDefaultTransitionType() { return demangledTypeName<SUCCESS>(); }
+};
+
+template <typename TSource, typename TOrthogonal>
+struct EvServiceRequestSent : sc::event<EvServiceRequestSent<TSource, TOrthogonal>>
+{
+  static std::string getEventLabel()
+  {
+    std::string label;
+    EventLabel<TSource>(label);
+    return label;
+  }
+};
+
+template <typename TSource, typename TOrthogonal>
+struct EvServiceFailure : sc::event<EvServiceFailure<TSource, TOrthogonal>>
+{
+  static std::string getEventLabel()
+  {
+    std::string label;
+    EventLabel<TSource>(label);
+    return label;
+  }
+
+  static std::string getDefaultTransitionTag() { return demangledTypeName<ABORT>(); }
+
+  static std::string getDefaultTransitionType() { return demangledTypeName<ABORT>(); }
 };
 
 //---------- CONTROL FLOW EVENTS ----------------------------------------------------------
