@@ -1,3 +1,77 @@
+## smacc2 (jazzy) - 3.1.0-2
+
+The packages in the `smacc2` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release smacc2 --rosdistro jazzy --track jazzy --unsafe` on `Mon, 01 Jun 2026 05:52:56 -0000`
+
+These packages were released:
+- `backward_global_planner`
+- `backward_local_planner`
+- `cl_foundation_pose`
+- `cl_gcalcli`
+- `cl_generic_sensor`
+- `cl_http`
+- `cl_keyboard`
+- `cl_lifecycle_node`
+- `cl_mission_tracker`
+- `cl_modbus_tcp_relay`
+- `cl_moveit2z`
+- `cl_nav2z`
+- `cl_px4_mr`
+- `cl_ros2_timer`
+- `eg_conditional_generator`
+- `eg_random_generator`
+- `forward_global_planner`
+- `forward_local_planner`
+- `nav2z_planners_common`
+- `pure_spinning_local_planner`
+- `sm_advanced_recovery_1`
+- `sm_atomic`
+- `sm_atomic_http`
+- `sm_atomic_lifecycle`
+- `sm_atomic_mode_states`
+- `sm_atomic_performance_trace_1`
+- `sm_atomic_subscribers_performance_test`
+- `sm_branching`
+- `sm_cl_gcalcli_test_1`
+- `sm_cl_keyboard_unit_test_1`
+- `sm_cl_px4_mr_test_1`
+- `sm_cl_px4_mr_test_2`
+- `sm_cl_ros2_timer_unit_test_1`
+- `sm_coretest_transition_speed_1`
+- `sm_data_sharing_1`
+- `sm_data_sharing_2`
+- `sm_modbus_tcp_relay_test_1`
+- `sm_multi_stage_1`
+- `sm_multithread_test_1`
+- `sm_nav2_gazebo_test_1`
+- `sm_pack_ml`
+- `sm_panda_cl_moveit2z_cb_inventory`
+- `sm_panda_cl_moveit2z_cb_inventory_isaacsim`
+- `sm_simple_action_client`
+- `sm_three_some`
+- `smacc2`
+- `smacc2_msgs`
+- `sr_all_events_go`
+- `sr_conditional`
+- `sr_event_countdown`
+- `undo_path_global_planner`
+
+Version of package(s) in repository `smacc2`:
+
+- upstream repository: https://github.com/robosoft-ai/SMACC2.git
+- release repository: https://github.com/robosoft-ai/SMACC2-release.git
+- rosdistro version: `3.0.1-1`
+- old version: `3.1.0-1`
+- new version: `3.1.0-2`
+
+Versions of tools used:
+
+- bloom version: `0.13.0`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## smacc2 (jazzy) - 3.0.1-1
 
 The packages in the `smacc2` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release smacc2 --rosdistro jazzy --track jazzy --unsafe` on `Mon, 17 Nov 2025 00:32:05 -0000`
