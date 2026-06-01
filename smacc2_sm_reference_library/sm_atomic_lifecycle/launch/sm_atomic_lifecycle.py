@@ -1,4 +1,4 @@
-# Copyright 2021 RobosoftAI Inc.
+# Copyright 2025 Robosoft Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -67,9 +67,9 @@ def generate_launch_description():
     # Construct logging prefix for lifecycle example node
     if log_dir:
         lifecycle_log = os.path.join(log_dir, f"lifecycle_example_node_{timestamp}.log")
-        lifecycle_prefix = f"konsole --hold -p tabtitle='Lifecycle Example' -e bash -c 'RCUTILS_COLORIZED_OUTPUT=1 \"$@\" 2>&1 | tee {lifecycle_log}; exec bash' -- "
+        lifecycle_prefix = f"konsole --hold -p tabtitle='Lifecycle Example Node' -e bash -c 'RCUTILS_COLORIZED_OUTPUT=1 \"$@\" 2>&1 | tee {lifecycle_log}; exec bash' -- "
     else:
-        lifecycle_prefix = "konsole --hold -p tabtitle='Lifecycle Example' -e"
+        lifecycle_prefix = "konsole --hold -p tabtitle='Lifecycle Example Node' -e"
 
     return LaunchDescription(
         [
@@ -78,12 +78,14 @@ def generate_launch_description():
                 executable="sm_atomic_lifecycle_node",
                 output="screen",
                 prefix=state_machine_prefix,
+                arguments=["--ros-args", "--log-level", "INFO"],
             ),
             Node(
                 package="sm_atomic_lifecycle",
                 executable="lifecycle_example_node",
                 output="screen",
                 prefix=lifecycle_prefix,
+                arguments=["--ros-args", "--log-level", "INFO"],
             ),
         ],
     )

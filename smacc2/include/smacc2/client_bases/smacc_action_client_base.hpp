@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public:
   }
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  void onStateOrthogonalAllocation()
   {
     // we create here all the event factory functions capturing the TOrthogonal
     postSuccessEvent = [this](auto msg)
@@ -155,62 +155,62 @@ public:
   }
 
   template <typename T>
-  boost::signals2::connection onSucceeded(void (T::*callback)(WrappedResult &), T * object)
+  smacc2::SmaccSignalConnection onSucceeded(void (T::*callback)(WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(onSucceeded_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onSucceeded(std::function<void(WrappedResult &)> callback)
+  smacc2::SmaccSignalConnection onSucceeded(std::function<void(WrappedResult &)> callback)
   {
     return this->getStateMachine()->createSignalConnection(onSucceeded_, callback);
   }
 
   template <typename T>
-  boost::signals2::connection onAborted(void (T::*callback)(WrappedResult &), T * object)
+  smacc2::SmaccSignalConnection onAborted(void (T::*callback)(WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(onAborted_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onAborted(std::function<void(WrappedResult &)> callback)
+  smacc2::SmaccSignalConnection onAborted(std::function<void(WrappedResult &)> callback)
   {
     return this->getStateMachine()->createSignalConnection(onAborted_, callback);
   }
 
   template <typename T>
-  boost::signals2::connection onCancelled(void (T::*callback)(WrappedResult &), T * object)
+  smacc2::SmaccSignalConnection onCancelled(void (T::*callback)(WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(onCancelled_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onCancelled(std::function<void(WrappedResult &)> callback)
+  smacc2::SmaccSignalConnection onCancelled(std::function<void(WrappedResult &)> callback)
   {
     return this->getStateMachine()->createSignalConnection(onCancelled_, callback);
   }
 
   /*
   template <typename T>
-  boost::signals2::connection onPreempted(void (T::*callback)(WrappedResult &), T *object)
+  smacc2::SmaccSignalConnection onPreempted(void (T::*callback)(WrappedResult &), T *object)
   {
       return this->getStateMachine()->createSignalConnection(onPreempted_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onPreempted(std::function<void(WrappedResult &)> callback)
+  smacc2::SmaccSignalConnection onPreempted(std::function<void(WrappedResult &)> callback)
   {
       return this->getStateMachine()->createSignalConnection(onPreempted_, callback);
   }
 
   template <typename T>
-  boost::signals2::connection onRejected(void (T::*callback)(WrappedResult &), T *object)
+  smacc2::SmaccSignalConnection onRejected(void (T::*callback)(WrappedResult &), T *object)
   {
       return this->getStateMachine()->createSignalConnection(onRejected_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onRejected(std::function<void(WrappedResult &)> callback)
+  smacc2::SmaccSignalConnection onRejected(std::function<void(WrappedResult &)> callback)
   {
       return this->getStateMachine()->createSignalConnection(onRejected_, callback);
   }
