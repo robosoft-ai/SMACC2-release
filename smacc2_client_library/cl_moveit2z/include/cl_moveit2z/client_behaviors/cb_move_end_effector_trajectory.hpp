@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -79,11 +79,11 @@ public:
   }
 
   template <typename TOrthogonal, typename TSourceObject>
-  void onOrthogonalAllocation()
+  void onStateOrthogonalAllocation()
   {
     this->initializeROS();
 
-    smacc2::SmaccAsyncClientBehavior::onOrthogonalAllocation<TOrthogonal, TSourceObject>();
+    smacc2::SmaccAsyncClientBehavior::onStateOrthogonalAllocation<TOrthogonal, TSourceObject>();
 
     postJointDiscontinuityEvent = [this](auto traj)
     {
@@ -113,7 +113,8 @@ public:
 
     // Get optional components for visualization
     CpTrajectoryVisualizer * trajectoryVisualizer = nullptr;
-    this->requiresComponent(trajectoryVisualizer, false);  // Optional component
+    this->requiresComponent(
+      trajectoryVisualizer, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     RCLCPP_INFO_STREAM(getLogger(), "[" << getName() << "] Generating end effector trajectory");
 
@@ -194,35 +195,10 @@ public:
     // handle finishing events
   }
 
-  virtual void onExit() override
-  {
-    // Get optional components for visualization cleanup
-    CpTrajectoryVisualizer * trajectoryVisualizer = nullptr;
-    this->requiresComponent(trajectoryVisualizer, false);  // Optional component
-
-    if (trajectoryVisualizer != nullptr && autocleanmarkers)
-    {
-      RCLCPP_INFO_STREAM(
-        getLogger(),
-        "[" << getName() << "] Clearing trajectory markers via CpTrajectoryVisualizer.");
-      trajectoryVisualizer->clearMarkers();
-    }
-    else if (autocleanmarkers)
-    {
-      // Legacy marker cleanup
-      std::lock_guard<std::mutex> guard(m_mutex_);
-      for (auto & marker : this->beahiorMarkers_.markers)
-      {
-        marker.header.stamp = getNode()->now();
-        marker.action = visualization_msgs::msg::Marker::DELETE;
-      }
-
-      if (markersPub_)
-      {
-        markersPub_->publish(beahiorMarkers_);
-      }
-    }
-  }
+  // onExit removed - requiresComponent() during state disposal causes deadlock
+  // Components and markers are automatically cleaned up when state is destroyed
+  // If manual cleanup needed in future, use empty onExit like CbMoveJoints
+  virtual void onExit() override {}
 
 protected:
   ComputeJointTrajectoryErrorCode computeJointSpaceTrajectory(
@@ -230,7 +206,8 @@ protected:
   {
     // Try to use CpJointSpaceTrajectoryPlanner component (preferred)
     CpJointSpaceTrajectoryPlanner * trajectoryPlanner = nullptr;
-    this->requiresComponent(trajectoryPlanner, false);  // Optional component
+    this->requiresComponent(
+      trajectoryPlanner, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     if (trajectoryPlanner != nullptr)
     {
@@ -485,7 +462,8 @@ protected:
 
     // Try to use CpTrajectoryExecutor component (preferred)
     CpTrajectoryExecutor * trajectoryExecutor = nullptr;
-    this->requiresComponent(trajectoryExecutor, false);  // Optional component
+    this->requiresComponent(
+      trajectoryExecutor, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     bool executionSuccess = false;
 
@@ -610,7 +588,7 @@ protected:
   {
     // Use CpTfListener component for transform lookups
     CpTfListener * tfListener = nullptr;
-    this->requiresComponent(tfListener, false);  // Optional component
+    this->requiresComponent(tfListener, smacc2::ComponentRequirement::SOFT);  // Optional component
 
     try
     {
