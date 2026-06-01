@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -181,6 +181,10 @@ void ISmaccStateMachine::initializeROS(std::string shortname)
     std::bind(
       &ISmaccStateMachine::getTransitionLogHistory, this, std::placeholders::_1,
       std::placeholders::_2, std::placeholders::_3));
+
+  // Notify signal detector that ROS initialization is complete
+  // This allows the polling loop to start safely accessing ROS objects
+  signalDetector_->notifyRosInitialized();
 }
 
 void ISmaccStateMachine::getTransitionLogHistory(
