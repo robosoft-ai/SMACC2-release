@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ SignalDetector::SignalDetector(SmaccFifoScheduler * scheduler, ExecutionModel ex
   loop_rate_hz = 20.0;
   end_ = false;
   initialized_ = false;
+  rosInitialized_ = false;
   executionModel_ = executionModel;
 }
 
@@ -202,6 +203,12 @@ void SignalDetector::notifyStateConfigured(ISmaccState * currentState)
 void SignalDetector::notifyStateExited(ISmaccState * /*currentState*/)
 {
   this->updatableStateElements_.pop_back();
+}
+
+void SignalDetector::notifyRosInitialized()
+{
+  RCLCPP_INFO(getLogger(), "[SignalDetector] ROS initialization complete, enabling polling loop");
+  rosInitialized_ = true;
 }
 
 /**
@@ -350,9 +357,19 @@ void SignalDetector::pollingLoop()
   rclcpp::Node::SharedPtr _;
   rclcpp::Rate r0(20);
 
-  while (!initialized_)
+  // Wait for both SignalDetector::initialize() (called from ISmaccStateMachine constructor)
+  // and ROS initialization to complete (initializeROS called from initiate_impl).
+  // This ensures orthogonals, clients, and ROS objects are fully initialized
+  // before we start polling and accessing them.
+  while ((!initialized_ || !rosInitialized_) && rclcpp::ok() && !end_)
   {
     r0.sleep();
+  }
+
+  if (!rclcpp::ok() || end_)
+  {
+    RCLCPP_INFO(getLogger(), "[SignalDetector] Shutdown requested before initialization completed");
+    return;
   }
 
   auto nh = getNode();
@@ -401,7 +418,7 @@ void SignalDetector::pollingLoop()
   }
 }
 
-void onSignalShutdown(int sig)
+void onSignalShutdown(int /*sig*/)
 {
   // IMPORTANT: Signal handlers can only call async-signal-safe functions
   // We must NOT call complex C++ methods here (like terminateScheduler)
