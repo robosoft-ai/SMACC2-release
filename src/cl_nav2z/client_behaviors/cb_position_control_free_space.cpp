@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,8 +50,6 @@ void CbPositionControlFreeSpace::onEntry()
   geometry_msgs::msg::Pose currentPose = pose->toPoseMsg();
 
   rclcpp::Rate loop_rate(10);
-  double countAngle = 0;
-  auto prevyaw = tf2::getYaw(currentPose.orientation);
 
   // PID controller gains (proportional, integral, and derivative)
   double kp_linear = 0.5;

@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -99,7 +99,6 @@ void CbSpiralMotion::onEntry()
       cmd_vel.linear.x = maxLinearVelocity;
     }
 
-    float signVal = (cmd_vel.angular.z >= 0.0f) ? 1.0f : -1.0f;
     // cmd_vel.angular.z -= signVal * angularAcceleration * dt;
 
     float ellapsedTimeFactor = current_time.seconds() / spiralMotionDuration.seconds();

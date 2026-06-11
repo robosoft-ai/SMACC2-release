@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,16 +43,6 @@ public:
     smacc2::SmaccAsyncClientBehavior::onStateOrthogonalAllocation<TOrthogonal, TSourceObject>();
   }
 
-  // LEGACY COMPATIBILITY: For third-party code that still calls the old method
-  template <typename TOrthogonal, typename TSourceObject>
-  [[deprecated(
-    "Use onStateOrthogonalAllocation instead. This method exists only for third-party "
-    "compatibility.")]] void
-  onOrthogonalAllocation()
-  {
-    onStateOrthogonalAllocation<TOrthogonal, TSourceObject>();
-  }
-
 protected:
   // NEW: Component-based API - uses components directly
   void sendGoal(nav2_msgs::action::NavigateToPose::Goal & goal)
@@ -73,36 +63,36 @@ protected:
 
   // Component-based signal connections
   template <typename T>
-  boost::signals2::connection onNavigationSucceeded(
+  smacc2::SmaccSignalConnection onNavigationSucceeded(
     void (T::*callback)(const components::CpNav2ActionInterface::WrappedResult &), T * object)
   {
     if (nav2ActionInterface_)
     {
       return nav2ActionInterface_->onNavigationSucceeded(callback, object);
     }
-    return boost::signals2::connection();
+    return smacc2::SmaccSignalConnection();
   }
 
   template <typename T>
-  boost::signals2::connection onNavigationAborted(
+  smacc2::SmaccSignalConnection onNavigationAborted(
     void (T::*callback)(const components::CpNav2ActionInterface::WrappedResult &), T * object)
   {
     if (nav2ActionInterface_)
     {
       return nav2ActionInterface_->onNavigationAborted(callback, object);
     }
-    return boost::signals2::connection();
+    return smacc2::SmaccSignalConnection();
   }
 
   template <typename T>
-  boost::signals2::connection onNavigationCancelled(
+  smacc2::SmaccSignalConnection onNavigationCancelled(
     void (T::*callback)(const components::CpNav2ActionInterface::WrappedResult &), T * object)
   {
     if (nav2ActionInterface_)
     {
       return nav2ActionInterface_->onNavigationCancelled(callback, object);
     }
-    return boost::signals2::connection();
+    return smacc2::SmaccSignalConnection();
   }
 
   // NEW: Component references instead of client reference
