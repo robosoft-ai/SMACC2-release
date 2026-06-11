@@ -124,25 +124,28 @@ public:
     postNavigationSuccessEvent = [this](const WrappedResult & result)
     {
       auto * ev = new smacc2::default_events::EvActionSucceeded<TClient, TOrthogonal>();
+      ev->resultMessage = result;
       this->postEvent(ev);
     };
 
     postNavigationAbortedEvent = [this](const WrappedResult & result)
     {
       auto * ev = new smacc2::default_events::EvActionAborted<TClient, TOrthogonal>();
+      ev->resultMessage = result;
       this->postEvent(ev);
     };
 
     postNavigationCancelledEvent = [this](const WrappedResult & result)
     {
       auto * ev = new smacc2::default_events::EvActionCancelled<TClient, TOrthogonal>();
+      ev->resultMessage = result;
       this->postEvent(ev);
     };
 
     postNavigationFeedbackEvent = [this](const Feedback & feedback)
     {
-      auto * ev = new smacc2::default_events::EvActionFeedback<TClient, TOrthogonal>();
-      //ev->feedbackMessage = feedback;
+      auto * ev = new smacc2::default_events::EvActionFeedback<Feedback, TOrthogonal>();
+      ev->feedbackMessage = feedback;
       this->postEvent(ev);
     };
 
@@ -181,7 +184,7 @@ public:
 
   // These methods are used by other client behavior and components that want to react to navigation events.
   template <typename T>
-  boost::signals2::connection onNavigationSucceeded(
+  smacc2::SmaccSignalConnection onNavigationSucceeded(
     void (T::*callback)(const WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(
@@ -189,14 +192,14 @@ public:
   }
 
   template <typename T>
-  boost::signals2::connection onNavigationAborted(
+  smacc2::SmaccSignalConnection onNavigationAborted(
     void (T::*callback)(const WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(onNavigationAborted_, callback, object);
   }
 
   template <typename T>
-  boost::signals2::connection onNavigationCancelled(
+  smacc2::SmaccSignalConnection onNavigationCancelled(
     void (T::*callback)(const WrappedResult &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(
@@ -204,7 +207,7 @@ public:
   }
 
   template <typename T>
-  boost::signals2::connection onNavigationFeedback(
+  smacc2::SmaccSignalConnection onNavigationFeedback(
     void (T::*callback)(const Feedback &), T * object)
   {
     return this->getStateMachine()->createSignalConnection(onNavigationFeedback_, callback, object);

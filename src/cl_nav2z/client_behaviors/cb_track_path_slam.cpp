@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
  * 	 Authors: Pablo Inigo Blasco, Brett Aldrich
  *
  ******************************************************************************************************************/
-
-#pragma once
 
 #include <cl_nav2z/client_behaviors/cb_track_path_slam.hpp>
 #include <cl_nav2z/components/odom_tracker/cp_odom_tracker.hpp>

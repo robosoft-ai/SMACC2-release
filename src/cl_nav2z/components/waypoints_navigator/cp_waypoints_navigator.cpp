@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -478,7 +478,7 @@ void CpWaypointNavigatorBase::loadWayPointsFromFile(std::string filepath)
 
     if (wp_node != NULL)
     {
-      for (int64_t i = 0; i < wp_node->size(); ++i)
+      for (std::size_t i = 0; i < wp_node->size(); ++i)
       {
         // Parse waypoint entries on YAML
         geometry_msgs::msg::Pose wp;
@@ -551,7 +551,7 @@ void CpWaypointNavigatorBase::loadWayPointsFromFile2(std::string filepath)
 
     if (wp_node != NULL)
     {
-      for (int64_t i = 0; i < wp_node->size(); ++i)
+      for (std::size_t i = 0; i < wp_node->size(); ++i)
       {
         // Parse waypoint entries on YAML
         geometry_msgs::msg::Pose wp;
