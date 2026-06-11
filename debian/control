@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-nav2-gazebo-test-1
+Section: misc
+Priority: optional
+Maintainer: User <user@example.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-keyboard, ros-jazzy-cl-nav2z, ros-jazzy-cl-ros2-timer, ros-jazzy-geometry-msgs, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-nav2-gazebo-test-1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-cl-keyboard, ros-jazzy-cl-nav2z, ros-jazzy-cl-ros2-timer, ros-jazzy-geometry-msgs, ros-jazzy-nav2-bringup, ros-jazzy-smacc2, xterm, ros-jazzy-ros-workspace
+Description: Nav2 unit test state machine for SMACC2
