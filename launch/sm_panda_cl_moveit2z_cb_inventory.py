@@ -1,4 +1,4 @@
-# Copyright 2021 RobosoftAI Inc.
+# Copyright 2025 Robosoft Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -100,6 +100,7 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
         parameters=[moveit_config.to_dict()],
         prefix=move_group_prefix,
+        arguments=["--ros-args", "--log-level", "INFO"],
     )
 
     rviz_base = LaunchConfiguration("rviz_config")
@@ -184,6 +185,7 @@ def launch_setup(context, *args, **kwargs):
         executable="sm_panda_cl_moveit2z_cb_inventory_node",
         prefix=state_machine_prefix,
         output="screen",
+        arguments=["--ros-args", "--log-level", "INFO"],
     )
 
     # Construct logging prefix for keyboard client node
@@ -196,7 +198,7 @@ def launch_setup(context, *args, **kwargs):
     cl_keyboard_node = Node(
         package="cl_keyboard",
         executable="keyboard_server_node.py",
-        name="cl_keyboard",
+        name="keyboard_server",
         output="screen",
         prefix=keyboard_prefix,
         arguments=["--ros-args", "--log-level", "INFO"],
