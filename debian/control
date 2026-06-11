@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-coretest-transition-speed-1
+Section: misc
+Priority: optional
+Maintainer: SMACC2 is cool <smacc2@smacc2.cool>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-coretest-transition-speed-1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: The sm_coretest_transition_speed_1 package
