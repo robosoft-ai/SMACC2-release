@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-data-sharing-1
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <brett@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-keyboard, ros-jazzy-cl-ros2-timer, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-data-sharing-1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, konsole, ros-jazzy-cl-keyboard, ros-jazzy-cl-ros2-timer, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: Demonstrates sharing data across multiple states and clients using a state-machine-scoped component on a local client.
