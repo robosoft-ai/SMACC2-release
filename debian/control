@@ -1,0 +1,12 @@
+Source: ros-jazzy-cl-moveit2z
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <brett@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), libyaml-cpp-dev, ros-jazzy-ament-cmake, ros-jazzy-ament-index-cpp, ros-jazzy-moveit-ros-planning-interface, ros-jazzy-smacc2, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-yaml-cpp-vendor, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-cl-moveit2z
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libyaml-cpp-dev, ros-jazzy-ament-index-cpp, ros-jazzy-moveit-ros-planning-interface, ros-jazzy-smacc2, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-yaml-cpp-vendor, ros-jazzy-ros-workspace
+Description: The cl_moveit2z package
