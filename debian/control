@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-cl-px4-mr-test-2
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <brett@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-px4-mr, ros-jazzy-cl-ros2-timer, ros-jazzy-px4-msgs, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-cl-px4-mr-test-2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-cl-px4-mr, ros-jazzy-cl-ros2-timer, ros-jazzy-px4-msgs, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: SMACC2 test state machine for cl_px4_mr new behaviors (hold, yaw, altitude, waypoints, figure-8, barrel roll, return-to-home)
