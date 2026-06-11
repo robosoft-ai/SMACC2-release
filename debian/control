@@ -1,0 +1,12 @@
+Source: ros-jazzy-sm-modbus-tcp-relay-test-1
+Section: misc
+Priority: optional
+Maintainer: Brett Aldrich <brett@robosoft.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-cl-modbus-tcp-relay, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-sm-modbus-tcp-relay-test-1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-cl-modbus-tcp-relay, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: Test state machine for cl_modbus_tcp_relay client library
