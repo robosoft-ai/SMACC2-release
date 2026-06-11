@@ -1,4 +1,4 @@
-// Copyright 2021 RobosoftAI Inc.
+// Copyright 2025 Robosoft Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ std::shared_ptr<TBehavior> ISmaccState::configure(Args &&... args)
       std::shared_ptr<TBehavior>(new TBehavior(args...));  // is there an error here? are the
                                                            // behavior constructor parameters right?
     orthogonal->addClientBehavior(clientBehavior);
-    clientBehavior->template onOrthogonalAllocation<TOrthogonal, TBehavior>();
     clientBehavior->template onStateOrthogonalAllocation<TOrthogonal, TBehavior>();
     return clientBehavior;
   }
