@@ -1,240 +1,119 @@
-# Generic Sensor Client
+# SMACC2
 
-A SMACC2 client library for subscribing to ROS topics with optional timeout watchdog functionality. Built using a pure component-based architecture following SMACC2 best practices.
+SMACC2 is an event-driven, asynchronous, behavioral state machine library for real-time ROS 2 (Robotic Operating System) applications written in C++, designed to allow programmers to build robot control applications for multicomponent robots, in an intuitive and systematic manner.
+
+## Repository Status, Packages and Documentation
+
+ROS 2 Distro | Branch | Build status | Documentation | Released packages
+:---------: | :----: | :----------: | :-----------: | :---------------:
+**Foxy** | [`foxy`](https://github.com/robosoft-ai/SMACC2/tree/foxy) | [![Foxy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml?branch=foxy) <br /> [![Foxy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml?branch=foxy) | [![Doxygen Doc Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/foxy/html/namespaces.html) | [![ROS Build Farm](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?style=plastic&subject=ros-buildfarm&status=E.O.L&color=lightgray)](http://docs.ros.org/en/humble/Releases/End-of-Life.html) <br/>[SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#foxy)
+**Humble** | [`humble`](https://github.com/robosoft-ai/SMACC2/tree/humble) | [![Humble Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml?branch=humble)<br/> [![Humble Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml?branch=humble) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/humble/html/namespaces.html)| [![Build Status](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?subject=ros-buildfarm)](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/)<br/> [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#humble)
+**Jazzy** | [`jazzy`](https://github.com/robosoft-ai/SMACC2/tree/jazzy) | [![Jazzy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml?branch=jazzy) <br /> [![Jazzy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml?branch=jazzy) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/jazzy/html/namespaces.html) | [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#jazzy)
+
+**NOTE**: There are three build stages checking current and future compatibility of the package.
+
+1. Binary builds - against released packages (main and testing) in ROS distributions. Shows that direct local build is possible.
+
+   Uses repos file: `src/SMACC2/.github/SMACC2-not-released.<ros-distro>.repos`
+
+1. Semi-binary builds - against released core ROS packages (main and testing), but the immediate dependencies are pulled from source.
+   Shows that local build with dependencies is possible and if fails there we can expect that after the next package sync we will not be able to build.
+
+   Uses repos file: `src/SMACC2/.github/SMACC2.repos`
+
+1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+
+## Getting started - ROS Jazzy
+
+1. [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html).
+
+2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
+   ```
+   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
+   ```
+3. Create a new ROS 2 workspace if necessary:
+   ```
+   export COLCON_WS=~/workspace/jazzy_ws
+   mkdir -p $COLCON_WS/src
+   ```
+4. Or just navigate to your workspace source folder:
+   ```
+   cd ~/workspace/jazzy_ws/src
+   ```
+5. Clone the repo:
+   ```
+   git clone https://github.com/robosoft-ai/SMACC2.git
+   ```
+6. Checkout the Jazzy branch:
+   ```
+   cd ~/workspace/jazzy_ws/src/SMACC2
+   git checkout jazzy
+   ```
+7. Navigate to the workspace:
+   ```
+   cd ~/workspace/jazzy_ws
+   ```
+8. Update System:
+   ```
+   sudo apt update
+   sudo apt upgrade
+   ```
+9. Source the workspace:
+   ```
+   source /opt/ros/jazzy/setup.bash
+   ```
+10. Update dependencies:
+   ```
+   rosdep update
+   ```
+11. Pull relevant packages and install dependencies:
+   ```
+   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.jazzy.repos
+   rosdep install --ignore-src --from-paths src -y -r
+   ```
+12. Compile:
+   ```
+   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+   ```
+
 
 ## Features
+ *  ***Powered by ROS 2:*** SMACC2 has been developed specifically to work with ROS 2. It supports ROS 2 topics, services and actions, right out of the box.
+ *   ***Written in C++:*** Until now, ROS 2 has lacked a library to develop task-level behavioral state machines in C++. Although libraries have been developed in scripting languages such as python, these are unsuitable for real-world industrial environments where real-time requirements are demanded.
+ *   ***Orthogonals:*** Originally conceived by David Harel in 1987, orthogonality is absolutely crucial to developing state machines for complex robotic systems. This is because complex robots are always a collection of hardware devices which require communication protocols, start-up determinism, etc. With orthogonals, it is an intuitive and relatively straight forward exercise (at least conceptually;) to code a state machine for a robot comprising a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, for instance.
+ *  ***Static State Machine Checking:*** One of the features that SMACC2 inherits from Boost Statechart is that you get compile time validation checking. This benefits developers in that the amount of runtime testing necessary to ship quality software that is both stable and safe is dramatically reduced. Our philosophy is "Wherever possible, let the compiler do it".
+ *  ***State Machine Reference Library:*** With a constantly growing library of out-of-the-box reference state machines, (found in the folder [sm_reference_library](smacc2_sm_reference_library)) guaranteed to compile and run, you can jumpstart your development efforts by choosing a reference machine that is closest to your needs, and then customize and extend to meet the specific requirements of your robotic application. All the while knowing that the library supports advanced functionalities that are practically universal among actual working robots.
+ *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the cl_ros2_timer, the multi_role_sensor_client, and a cl_keyboard used extensively for state machine drafting & debugging.
+  *  ***Extensive Documentation:*** Although many ROS users are familiar with doxygen, our development team has spent a lot of time researching the more advanced features of doxygen such as uml style class diagrams and call graphs, and we've used them to document the SMACC2 library. Have a look to [our doxygen sites](https://robosoft-ai.github.io/smacc2_doxygen/master/html/namespaces.html) and we think you'll be blown away at what Doxygen looks like when [it's done right](https://robosoft-ai.github.io/smacc2_doxygen/master/html/classsmacc2_1_1ISmaccStateMachine.html) and it becomes a powerful tool to research a codebase.
+  *  ***SMACC2 Runtime Analyzer:*** The SMACC2 library works out of the box with the SMACC2 RTA. This allows developers to visualize and runtime debug the state machines they are working on. The SMACC2 RTA is closed source, but is free for individual and academic use. It can be found [here](https://robosoft.ai/product-category/smacc2-runtime-analyzer/).
 
-- **Component-based architecture** - Uses `CpTopicSubscriber` and `CpMessageTimeout` components
-- **Optional timeout watchdog** - Configurable message timeout monitoring
-- **Type-safe** - Template-based for any ROS message type
-- **Event-driven** - Posts SMACC2 events for message reception and timeouts
-- **Flexible configuration** - Configure topic and timeout at construction or runtime
+## Repository Structure
+- `smacc2` - core library of SMACC2.
+- `smacc2_client_library` - client libraries for SMACC2, e.g., Navigation2 (`nav2z_client`), MoveIt2 (`moveit2z_client`).
+- `smacc2_event_generators` - ...
+- `smacc2_msgs` - ROS 2 messages for SMACC2 framework.
+- `smacc2_sm_reference_library` - libraries with reference implementations of state-machines used for demonstration and testing of functionalities.
+- `↓smacc2_state_reactor_library` - ...
+- `smacc2_performance_tools` - ...
 
-## Architecture
+## SMACC2 applications
+From it's inception, SMACC2 was written to support the programming of multi-component, complex robots. If your project involves small, solar-powered insect robots, that simply navigate towards a light source, then SMACC2 might not be the right choice for you. But if you are trying to program a robot with a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, then you've come to the right place.
 
-The multirole sensor client follows the **ClKeyboard pattern** where all functionality is implemented through composable components:
+## Run a State Machine
+The easiest way to get started is by selecting one of the state machines in our [reference library](smacc2_sm_reference_library), and then hacking it to meet your needs.
 
-```
-ClGenericSensor
-    ├── CpTopicSubscriber (from smacc2 core)
-    │   ├── Subscribes to ROS topic
-    │   ├── Posts EvTopicMessage events
-    │   └── Posts EvTopicInitialMessage events
-    │
-    └── CpMessageTimeout (optional)
-        ├── Monitors message reception
-        ├── Posts EvTopicMessageTimeout events
-        └── Emits onMessageTimeout_ signal
-```
+Each state machine in the reference library comes with it's own README.md file, which contains the appropriate operating instructions, so that all you have to do is simply copy & paste some commands into your terminal.
 
-### Events Posted
 
-- `EvTopicMessage<TSource, TOrthogonal, TMessageType>` - Posted on every message
-- `EvTopicInitialMessage<TSource, TOrthogonal, TMessageType>` - Posted on first message only
-- `EvTopicMessageTimeout<TSource, TOrthogonal>` - Posted when timeout occurs (if configured)
+  *  If you are looking for a minimal example, we recommend [sm_atomic](smacc2_sm_reference_library/sm_atomic).
 
-## Usage
+  *  If you are looking for a minimal example but with a looping superstate, try [sm_three_some](smacc2_sm_reference_library/sm_three_some).
 
-### Basic Usage (No Timeout)
+  *  If you want to get started with the ROS Navigation stack right away, try [sm_nav2_test_7](https://github.com/robosoft-ai/nova_carter_sm_library/tree/main/sm_nav2_test_7).
 
-```cpp
-#include <cl_generic_sensor/cl_generic_sensor.hpp>
+Operating instructions can be found in each reference state machines readme file.
 
-namespace my_sm
-{
-// Create a client for sensor_msgs::LaserScan
-class ClLidar : public cl_generic_sensor::ClGenericSensor<sensor_msgs::msg::LaserScan>
-{
-public:
-  ClLidar()
-  {
-    this->topicName_ = "/scan";
-    // No timeout configured - watchdog disabled
-  }
-};
-}
-```
+Happy Coding!
 
-### Usage with Timeout Watchdog
-
-```cpp
-#include <cl_generic_sensor/cl_generic_sensor.hpp>
-
-namespace my_sm
-{
-// Create a client with 5-second timeout
-class ClGps : public cl_generic_sensor::ClGenericSensor<sensor_msgs::msg::NavSatFix>
-{
-public:
-  ClGps()
-  {
-    this->topicName_ = "/gps/fix";
-    this->timeout_ = rclcpp::Duration(5, 0);  // 5 second timeout
-  }
-};
-}
-```
-
-### Constructor-based Configuration
-
-```cpp
-// Direct construction with topic and timeout
-ClGenericSensor<std_msgs::msg::String> sensor("/topic_name", rclcpp::Duration(3, 0));
-```
-
-### Using in Orthogonals
-
-```cpp
-class OrSensor : public smacc2::Orthogonal<OrSensor>
-{
-public:
-  void onInitialize() override
-  {
-    auto sensor_client = this->createClient<ClLidar>();
-  }
-};
-```
-
-### State Transitions with Events
-
-```cpp
-struct StMonitoring : smacc2::SmaccState<StMonitoring, SmMyStateMachine>
-{
-  using SmaccState::SmaccState;
-
-  typedef mpl::list<
-    // Transition on message received
-    Transition<EvTopicMessage<ClLidar, OrSensor>, StProcessing>,
-
-    // Transition on first message (initialization)
-    Transition<EvTopicInitialMessage<ClLidar, OrSensor>, StInitialized>,
-
-    // Transition on timeout (if configured)
-    Transition<EvTopicMessageTimeout<ClLidar, OrSensor>, StError>
-  > reactions;
-
-  static void staticConfigure()
-  {
-    configure_orthogonal<OrSensor, CbDefaultGenericSensorBehavior<ClLidar>>();
-  }
-};
-```
-
-### Using the Default Behavior
-
-The `CbDefaultGenericSensorBehavior` automatically propagates events from components:
-
-```cpp
-#include <cl_generic_sensor/client_behaviors/cb_default_generic_sensor_behavior.hpp>
-
-// Use directly
-configure_orthogonal<OrSensor, cl_generic_sensor::CbDefaultGenericSensorBehavior<ClLidar>>();
-
-// Or create custom behavior
-class CbCustomSensorBehavior
-  : public cl_generic_sensor::CbDefaultGenericSensorBehavior<ClLidar>
-{
-public:
-  void onMessageCallback(const sensor_msgs::msg::LaserScan& msg) override
-  {
-    // Custom processing
-    RCLCPP_INFO(getLogger(), "Received scan with %zu points", msg.ranges.size());
-  }
-};
-```
-
-## Components
-
-See [components/README.md](include/cl_generic_sensor/components/README.md) for detailed component documentation.
-
-## Examples
-
-### Example 1: Temperature Sensor with Timeout
-
-```cpp
-class ClTemperature
-  : public cl_generic_sensor::ClGenericSensor<sensor_msgs::msg::Temperature>
-{
-public:
-  ClTemperature()
-  {
-    this->topicName_ = "/temperature";
-    this->timeout_ = rclcpp::Duration(10, 0);  // 10 second timeout
-  }
-};
-
-// In your state
-typedef mpl::list<
-  Transition<EvTopicMessage<ClTemperature, OrSensors>, StProcessTemp>,
-  Transition<EvTopicMessageTimeout<ClTemperature, OrSensors>, StSensorFault>
-> reactions;
-```
-
-### Example 2: Image Stream (No Timeout)
-
-```cpp
-class ClCamera
-  : public cl_generic_sensor::ClGenericSensor<sensor_msgs::msg::Image>
-{
-public:
-  ClCamera()
-  {
-    this->topicName_ = "/camera/image_raw";
-    // No timeout - high-frequency stream
-  }
-};
-```
-
-## Migration from Legacy Version
-
-If you have code using the old `SmaccSubscriberClient`-based implementation:
-
-**Old:**
-```cpp
-class ClOldSensor : public smacc2::client_bases::SmaccSubscriberClient<std_msgs::msg::String>
-{
-  // Timeout logic embedded in client
-};
-```
-
-**New:**
-```cpp
-class ClNewSensor : public cl_generic_sensor::ClGenericSensor<std_msgs::msg::String>
-{
-public:
-  ClNewSensor()
-  {
-    this->topicName_ = "/topic";
-    this->timeout_ = rclcpp::Duration(5, 0);  // Optional
-  }
-};
-```
-
-The event types remain the same, so state transition tables don't need changes.
-
-## Benefits of Component-Based Design
-
-1. **Separation of Concerns** - Subscription and timeout are separate components
-2. **Reusability** - Components can be used across different clients
-3. **Testability** - Each component can be tested independently
-4. **Flexibility** - Timeout is optional, no overhead if not needed
-5. **Maintainability** - Clear boundaries between functionality
-6. **Extensibility** - Easy to add new components without modifying client
-
-## Design Pattern
-
-This client follows the **ClKeyboard pattern** established in SMACC2:
-- Client inherits from `ISmaccClient` (not `SmaccSubscriberClient`)
-- Functionality provided through components via `onComponentInitialization()`
-- Components are created using `createComponent<>()`
-- Components communicate via signals and SMACC2 events
-
-## See Also
-
-- [SMACC2 Documentation](https://smacc2.robosoft.ai/)
-- [ClKeyboard Client](../../cl_keyboard/) - Reference implementation of component-based pattern
-- [SMACC2 Client Library Guide](../../CLAUDE.md)
-
-## License
-
-Apache License 2.0
+## Support
+If you are interested in getting involved or need a little support, feel free to contact us by emailing techsupport@robosoft.ai
