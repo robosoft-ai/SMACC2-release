@@ -1,0 +1,12 @@
+Source: ros-jazzy-cl-modbus-tcp-relay
+Section: misc
+Priority: optional
+Maintainer: Pablo Inigo Blasco <pablo@ibrobotics.com>
+Build-Depends: debhelper (>= 9.0.0), libmodbus-dev, pkg-config, ros-jazzy-ament-cmake, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-cl-modbus-tcp-relay
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmodbus5, ros-jazzy-rclcpp, ros-jazzy-smacc2, ros-jazzy-ros-workspace
+Description: SMACC2 client for Modbus TCP relay control (8-channel Waveshare POE ETH Relay)
