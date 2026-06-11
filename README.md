@@ -1,240 +1,119 @@
-# cl_modbus_tcp_relay
+# SMACC2
+
+SMACC2 is an event-driven, asynchronous, behavioral state machine library for real-time ROS 2 (Robotic Operating System) applications written in C++, designed to allow programmers to build robot control applications for multicomponent robots, in an intuitive and systematic manner.
+
+## Repository Status, Packages and Documentation
+
+ROS 2 Distro | Branch | Build status | Documentation | Released packages
+:---------: | :----: | :----------: | :-----------: | :---------------:
+**Foxy** | [`foxy`](https://github.com/robosoft-ai/SMACC2/tree/foxy) | [![Foxy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-binary-build.yml?branch=foxy) <br /> [![Foxy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml/badge.svg?branch=foxy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/foxy-semi-binary-build.yml?branch=foxy) | [![Doxygen Doc Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/foxy/html/namespaces.html) | [![ROS Build Farm](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?style=plastic&subject=ros-buildfarm&status=E.O.L&color=lightgray)](http://docs.ros.org/en/humble/Releases/End-of-Life.html) <br/>[SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#foxy)
+**Humble** | [`humble`](https://github.com/robosoft-ai/SMACC2/tree/humble) | [![Humble Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-binary-build.yml?branch=humble)<br/> [![Humble Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/humble-semi-binary-build.yml?branch=humble) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=humble)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/humble/html/namespaces.html)| [![Build Status](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/badge/icon?subject=ros-buildfarm)](https://build.ros2.org/job/Hsrc_uJ__smacc2__ubuntu_jammy__source/)<br/> [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#humble)
+**Jazzy** | [`jazzy`](https://github.com/robosoft-ai/SMACC2/tree/jazzy) | [![Jazzy Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-binary-build.yml?branch=jazzy) <br /> [![Jazzy Semi-Binary Build](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/jazzy-semi-binary-build.yml?branch=jazzy) | [![Doxygen Deployment](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml/badge.svg?branch=jazzy)](https://github.com/robosoft-ai/SMACC2/actions/workflows/doxygen-deploy.yml) <br /> [Generated Doc](https://robosoft-ai.github.io/smacc2_doxygen/jazzy/html/namespaces.html) | [SMACC2](https://index.ros.org/p/smacc2/github-robosoft-ai-SMACC2/#jazzy)
+
+**NOTE**: There are three build stages checking current and future compatibility of the package.
+
+1. Binary builds - against released packages (main and testing) in ROS distributions. Shows that direct local build is possible.
+
+   Uses repos file: `src/SMACC2/.github/SMACC2-not-released.<ros-distro>.repos`
+
+1. Semi-binary builds - against released core ROS packages (main and testing), but the immediate dependencies are pulled from source.
+   Shows that local build with dependencies is possible and if fails there we can expect that after the next package sync we will not be able to build.
+
+   Uses repos file: `src/SMACC2/.github/SMACC2.repos`
+
+1. Source build - also core ROS packages are build from source. It shows potential issues in the mid future.
+
+## Getting started - ROS Jazzy
+
+1. [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html).
+
+2. Make sure that `colcon`, its extensions, `vcs`, and development tools are installed:
+   ```
+   sudo apt install python3-colcon-common-extensions python3-vcstool clang-format pre-commit
+   ```
+3. Create a new ROS 2 workspace if necessary:
+   ```
+   export COLCON_WS=~/workspace/jazzy_ws
+   mkdir -p $COLCON_WS/src
+   ```
+4. Or just navigate to your workspace source folder:
+   ```
+   cd ~/workspace/jazzy_ws/src
+   ```
+5. Clone the repo:
+   ```
+   git clone https://github.com/robosoft-ai/SMACC2.git
+   ```
+6. Checkout the Jazzy branch:
+   ```
+   cd ~/workspace/jazzy_ws/src/SMACC2
+   git checkout jazzy
+   ```
+7. Navigate to the workspace:
+   ```
+   cd ~/workspace/jazzy_ws
+   ```
+8. Update System:
+   ```
+   sudo apt update
+   sudo apt upgrade
+   ```
+9. Source the workspace:
+   ```
+   source /opt/ros/jazzy/setup.bash
+   ```
+10. Update dependencies:
+   ```
+   rosdep update
+   ```
+11. Pull relevant packages and install dependencies:
+   ```
+   vcs import src --skip-existing --input src/SMACC2/.github/SMACC2.jazzy.repos
+   rosdep install --ignore-src --from-paths src -y -r
+   ```
+12. Compile:
+   ```
+   colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+   ```
+
+
+## Features
+ *  ***Powered by ROS 2:*** SMACC2 has been developed specifically to work with ROS 2. It supports ROS 2 topics, services and actions, right out of the box.
+ *   ***Written in C++:*** Until now, ROS 2 has lacked a library to develop task-level behavioral state machines in C++. Although libraries have been developed in scripting languages such as python, these are unsuitable for real-world industrial environments where real-time requirements are demanded.
+ *   ***Orthogonals:*** Originally conceived by David Harel in 1987, orthogonality is absolutely crucial to developing state machines for complex robotic systems. This is because complex robots are always a collection of hardware devices which require communication protocols, start-up determinism, etc. With orthogonals, it is an intuitive and relatively straight forward exercise (at least conceptually;) to code a state machine for a robot comprising a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, for instance.
+ *  ***Static State Machine Checking:*** One of the features that SMACC2 inherits from Boost Statechart is that you get compile time validation checking. This benefits developers in that the amount of runtime testing necessary to ship quality software that is both stable and safe is dramatically reduced. Our philosophy is "Wherever possible, let the compiler do it".
+ *  ***State Machine Reference Library:*** With a constantly growing library of out-of-the-box reference state machines, (found in the folder [sm_reference_library](smacc2_sm_reference_library)) guaranteed to compile and run, you can jumpstart your development efforts by choosing a reference machine that is closest to your needs, and then customize and extend to meet the specific requirements of your robotic application. All the while knowing that the library supports advanced functionalities that are practically universal among actual working robots.
+ *  ***SMACC2 Client Library:*** SMACC2 also features a constantly growing library of [clients](smacc2_client_library) that support ROS 2 Action Servers, Service Servers and other nodes right out-of-the box. The clients within the SMACC2 Client library have been built utilizing a component based architecture that allows for developer to build powerful clients of their own. Current clients of note include MoveBaseZ, a full featured Action Client built to integrate with Nav2, the cl_ros2_timer, the multi_role_sensor_client, and a cl_keyboard used extensively for state machine drafting & debugging.
+  *  ***Extensive Documentation:*** Although many ROS users are familiar with doxygen, our development team has spent a lot of time researching the more advanced features of doxygen such as uml style class diagrams and call graphs, and we've used them to document the SMACC2 library. Have a look to [our doxygen sites](https://robosoft-ai.github.io/smacc2_doxygen/master/html/namespaces.html) and we think you'll be blown away at what Doxygen looks like when [it's done right](https://robosoft-ai.github.io/smacc2_doxygen/master/html/classsmacc2_1_1ISmaccStateMachine.html) and it becomes a powerful tool to research a codebase.
+  *  ***SMACC2 Runtime Analyzer:*** The SMACC2 library works out of the box with the SMACC2 RTA. This allows developers to visualize and runtime debug the state machines they are working on. The SMACC2 RTA is closed source, but is free for individual and academic use. It can be found [here](https://robosoft.ai/product-category/smacc2-runtime-analyzer/).
+
+## Repository Structure
+- `smacc2` - core library of SMACC2.
+- `smacc2_client_library` - client libraries for SMACC2, e.g., Navigation2 (`nav2z_client`), MoveIt2 (`moveit2z_client`).
+- `smacc2_event_generators` - ...
+- `smacc2_msgs` - ROS 2 messages for SMACC2 framework.
+- `smacc2_sm_reference_library` - libraries with reference implementations of state-machines used for demonstration and testing of functionalities.
+- `↓smacc2_state_reactor_library` - ...
+- `smacc2_performance_tools` - ...
+
+## SMACC2 applications
+From it's inception, SMACC2 was written to support the programming of multi-component, complex robots. If your project involves small, solar-powered insect robots, that simply navigate towards a light source, then SMACC2 might not be the right choice for you. But if you are trying to program a robot with a mobile base, a robotic arm, a gripper, two lidar sensors, a gps transceiver and an imu, then you've come to the right place.
+
+## Run a State Machine
+The easiest way to get started is by selecting one of the state machines in our [reference library](smacc2_sm_reference_library), and then hacking it to meet your needs.
 
-SMACC2 client library for controlling Modbus TCP relay boards, specifically designed for the Waveshare 8-Channel POE ETH Relay.
+Each state machine in the reference library comes with it's own README.md file, which contains the appropriate operating instructions, so that all you have to do is simply copy & paste some commands into your terminal.
 
-## Overview
 
-This client library provides a SMACC2-compatible interface for controlling relay boards via Modbus TCP protocol. It uses the libmodbus C library for communication and follows SMACC2's pure component-based architecture.
+  *  If you are looking for a minimal example, we recommend [sm_atomic](smacc2_sm_reference_library/sm_atomic).
 
-## Target Hardware
+  *  If you are looking for a minimal example but with a looping superstate, try [sm_three_some](smacc2_sm_reference_library/sm_three_some).
 
-- **Device**: Waveshare 8-Channel POE ETH Relay (or compatible)
-- **Protocol**: Modbus TCP
-- **Default IP**: 192.168.1.254
-- **Default Port**: 502
-- **Slave ID**: 0x01
-- **Coil Addresses**: 0x0000-0x0007 (channels 1-8)
+  *  If you want to get started with the ROS Navigation stack right away, try [sm_nav2_test_7](https://github.com/robosoft-ai/nova_carter_sm_library/tree/main/sm_nav2_test_7).
 
-## Dependencies
+Operating instructions can be found in each reference state machines readme file.
 
-### System Dependencies
+Happy Coding!
 
-```bash
-sudo apt install libmodbus-dev
-```
-
-### ROS2 Dependencies
-
-- smacc2
-
-## Architecture
-
-### Client: ClModbusTcpRelay
-
-Pure orchestrator that creates and configures components during initialization. Configuration is loaded from YAML parameters.
-
-### Components
-
-#### CpModbusConnection
-
-Manages libmodbus context lifecycle, TCP connection, and heartbeat monitoring.
-
-**Responsibilities:**
-- Create/destroy modbus_t context
-- Manage TCP connection state
-- Periodic heartbeat via ISmaccUpdatable
-- Emit connection state change signals
-- Thread-safe connection access via mutex
-
-**Signals:**
-- `onConnectionLost_` - Emitted when heartbeat fails
-- `onConnectionRestored_` - Emitted when reconnection succeeds
-- `onConnectionError_` - Emitted on connection errors
-
-#### CpModbusRelay
-
-Handles Modbus coil read/write operations for the 8-channel relay.
-
-**Methods:**
-- `writeCoil(int channel, bool state)` - Write single channel (1-8)
-- `writeAllCoils(bool state)` - Write all channels ON or OFF
-- `writeAllCoils(uint8_t mask)` - Write all channels with bitmask
-- `readCoil(int channel)` - Read single channel state
-- `readAllCoils()` - Read all channel states
-
-### Client Behaviors
-
-| Behavior | Description |
-|----------|-------------|
-| `CbRelayOn` | Turn on a specific relay channel (1-8) |
-| `CbRelayOff` | Turn off a specific relay channel (1-8) |
-| `CbAllRelaysOn` | Turn on all 8 relay channels |
-| `CbAllRelaysOff` | Turn off all 8 relay channels |
-| `CbRelayStatus` | Read the status of relay channels |
-
-### Events
-
-```cpp
-// Connection events (source: CpModbusConnection)
-EvConnectionLost<CpModbusConnection, OrRelay>
-EvConnectionRestored<CpModbusConnection, OrRelay>
-
-// Relay operation events (source: CpModbusRelay)
-EvRelayWriteSuccess<CpModbusRelay, OrRelay>
-EvRelayWriteFailure<CpModbusRelay, OrRelay>
-```
-
-## Configuration
-
-Configuration is loaded from ROS2 parameters (typically via YAML config file):
-
-```yaml
-your_state_machine:
-  ros__parameters:
-    modbus_relay:
-      ip_address: "192.168.1.254"    # Relay board IP address
-      port: 502                       # Modbus TCP port
-      slave_id: 1                     # Modbus slave ID
-      heartbeat_interval_ms: 1000     # Heartbeat check interval
-      connect_on_init: true           # Auto-connect on initialization
-```
-
-### Default Values
-
-| Parameter | Default |
-|-----------|---------|
-| `ip_address` | "192.168.1.254" |
-| `port` | 502 |
-| `slave_id` | 1 |
-| `heartbeat_interval_ms` | 1000 |
-| `connect_on_init` | true |
-
-## Usage
-
-### Orthogonal Definition
-
-```cpp
-#include <cl_modbus_tcp_relay/cl_modbus_tcp_relay.hpp>
-
-class OrRelay : public smacc2::Orthogonal<OrRelay>
-{
-public:
-  void onInitialize() override
-  {
-    // Configuration loaded from YAML parameters
-    auto relay_client = this->createClient<cl_modbus_tcp_relay::ClModbusTcpRelay>();
-  }
-};
-```
-
-### State Definition
-
-```cpp
-#include <cl_modbus_tcp_relay/client_behaviors/cb_relay_on.hpp>
-#include <cl_modbus_tcp_relay/client_behaviors/cb_relay_off.hpp>
-
-struct StActivateRelay : smacc2::SmaccState<StActivateRelay, SmExample>
-{
-  using SmaccState::SmaccState;
-
-  typedef mpl::list<
-    Transition<EvCbSuccess<CbRelayOn, OrRelay>, StNextState>,
-    Transition<EvCbFailure<CbRelayOn, OrRelay>, StError>,
-    Transition<EvConnectionLost<CpModbusConnection, OrRelay>, StReconnect>
-  > reactions;
-
-  static void staticConfigure()
-  {
-    // Turn on channel 1
-    configure_orthogonal<OrRelay, cl_modbus_tcp_relay::CbRelayOn>(1);
-  }
-};
-```
-
-### Launch File
-
-```python
-from launch import LaunchDescription
-from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
-import os
-
-def generate_launch_description():
-    config_file = os.path.join(
-        get_package_share_directory('your_state_machine'),
-        'config',
-        'your_config.yaml'
-    )
-
-    return LaunchDescription([
-        Node(
-            package='your_state_machine',
-            executable='your_state_machine_node',
-            name='your_state_machine',
-            output='screen',
-            parameters=[config_file]
-        )
-    ])
-```
-
-## Manual Testing with mbpoll
-
-For debugging and manual testing, you can use the `mbpoll` command-line tool:
-
-```bash
-# Install mbpoll
-sudo apt install mbpoll
-
-# Read all 8 coil states
-mbpoll -m tcp -a 1 -t 0 -r 1 -c 8 192.168.1.254
-
-# Write single coil ON (channel 1)
-mbpoll -m tcp -a 1 -t 0 -r 1 192.168.1.254 1
-
-# Write single coil OFF (channel 1)
-mbpoll -m tcp -a 1 -t 0 -r 1 192.168.1.254 0
-
-# Write all coils ON
-mbpoll -m tcp -a 1 -t 0 -r 1 -c 8 192.168.1.254 1 1 1 1 1 1 1 1
-
-# Write all coils OFF
-mbpoll -m tcp -a 1 -t 0 -r 1 -c 8 192.168.1.254 0 0 0 0 0 0 0 0
-```
-
-### mbpoll Options Reference
-
-| Option | Description |
-|--------|-------------|
-| `-m tcp` | Use Modbus TCP protocol |
-| `-a 1` | Slave address (1) |
-| `-t 0` | Data type: coil (0) |
-| `-r 1` | Starting reference (1 = address 0x0000) |
-| `-c 8` | Number of coils to read/write |
-
-## Modbus Protocol Reference
-
-| Operation | Function Code | Address Range |
-|-----------|---------------|---------------|
-| Read Coils | 0x01 | 0x0000-0x0007 |
-| Write Single Coil | 0x05 | 0x0000-0x0007 |
-| Write Multiple Coils | 0x0F | 0x0000 (8 coils) |
-
-### Coil Values
-
-- ON: 0xFF00 (function 0x05) or 1 (function 0x0F)
-- OFF: 0x0000
-
-## Building
-
-```bash
-# From workspace root
-colcon build --packages-select cl_modbus_tcp_relay
-```
-
-## Test State Machine
-
-See `sm_modbus_tcp_relay_test_1` for a complete test state machine that exercises all behaviors.
-
-## License
-
-Apache-2.0
+## Support
+If you are interested in getting involved or need a little support, feel free to contact us by emailing techsupport@robosoft.ai
